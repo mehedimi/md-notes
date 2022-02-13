@@ -1,21 +1,19 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <div class="flex w-100 h-screen font-lato">
+    <Sidebar />
+    <Notes />
+    <Note/>
+  </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<script setup>
+import Api from './api/api.js'
+import Sidebar from './components/Sidebar.vue'
+import Notes from './components/Notes.vue'
+import Note from './components/Note.vue'
+
+Api.get('/').then((response) => {
+  console.log(response);
+})
+
+</script>
