@@ -1,30 +1,27 @@
 <template>
-  <div class="min-w-[18rem] w-72 bg-gray-100 h-full p-3">
-    <div class="pt-10">
-      <input type="search" placeholder="Search notes..." class="rounded-md w-full border-0 focus:ring-gray-400 focus:ring-2 py-3">
+  <div class="min-w-[18rem] w-72 bg-gray-100 h-full p-3 flex flex-col">
+    <Search />
+    <Folder class="h-full"/>
+    <div class="h-[136px]">
+      <CreateFolder></CreateFolder>
+      <button class="px-4 py-3 w-full bg-white text-gray-700 text-sm rounded-lg flex items-center">
+        <i class="fa-solid fa-gear text-xl mr-4"></i>
+        <span>Settings</span>
+      </button>
     </div>
-    <ul class="mt-6">
-      <li :class="{'bg-white text-gray-900': folder.isActive}" class="flex items-center p-3 rounded mb-3 text-gray-400" v-for="(folder, index) in folders" :key="index">
-        <i :class="`fa-solid fa-${folder.icon}`"></i>
-        <a href="#" class="ml-3">{{ folder.name }}</a>
-        <button class="ml-auto">
-          <i class="fa-solid fa-ellipsis"></i>
-        </button>
-      </li>
-    </ul>
   </div>
 </template>
 
-<script setup>
-  const folders = [
-    {
-      name: 'My Notes',
-      icon: 'address-book',
-    },
-    {
-      name: 'To-do List',
-      icon: 'check',
-      isActive: true
-    }
-  ]
+<script>
+import Folder from './Folder.vue'
+import Search from './Search.vue';
+import CreateFolder from './Folder/Create.vue'
+
+export default {
+  components: {
+    Folder,
+    Search,
+    CreateFolder
+  }
+}
 </script>
