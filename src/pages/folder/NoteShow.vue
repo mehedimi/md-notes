@@ -1,13 +1,26 @@
 <template>
   <Note/>
 </template>
-<script setup>
-import { useStore } from 'vuex';
+<script>
 import Note from '../../components/Note.vue'
-const store = useStore();
 
-store.dispatch('note/show')
-
-console.log('sdfdsfh');
-
+export default {
+  components: {
+    Note
+  },
+  methods: {
+    find() {
+      const {note: noteId} = this.$route.params;
+      this.$store.dispatch('note/show', noteId)
+    }
+  },
+  watch: {
+    '$route.params.note': {
+      immediate: true,
+      handler() {
+        this.find()
+      }
+    }
+  }
+}
 </script>

@@ -18,7 +18,7 @@ export default {
     watch: {
         search: debounce(function(s) {
             this.get({
-                forlderId: this.$route.query.forder_id,
+                folderId: this.$route.params.folder,
                 s
             })
         }, 400)

@@ -7,12 +7,12 @@
 
 <script>
 import Sidebar from '../../components/Sidebar.vue'
-import Notes from '../../components/Notes.vue'
+import NoNoteSelected from '../../components/Note/NoNoteSelected.vue'
 
 export default {
   components: {
-    Notes,
-    Sidebar
+    Sidebar,
+    NoNoteSelected
   },
   mounted() {
     this.$store.dispatch('folder/get')

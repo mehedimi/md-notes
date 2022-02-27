@@ -9,7 +9,11 @@
             <ListboxButton
               class="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded cursor-default sm:text-sm border border-gray-200 focus:border-gray-200 focus:ring-gray-300 transition focus:ring-2"
             >
-              <span class="block truncate">{{ selectedFolder.name || 'Please select folder' }}</span>
+              <span class="block truncate" v-if="selectedFolder.name">
+                <i :class="`las la-${selectedFolder.icon}`"></i>
+                {{ selectedFolder.name }}
+              </span>
+              <span class="block truncate" v-else>{{ 'Please select folder' }}</span>
               <span
                 class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
               >
@@ -60,10 +64,12 @@
             </transition>
           </div>
         </Listbox>
+        <p class="mt-1 text-xs text-red-500 italic" v-if="errors.hasOwnProperty('folder_id')">{{ errors.folder_id.message }}</p>
       </div>
       <div class="mt-4">
         <label class="text-sm mb-1 block">Title</label>
         <input type="text" v-model="note.title" placeholder="Enter note title" class="rounded-md w-full border-gray-200 focus:border-gray-200 focus:ring-gray-300 transition focus:ring-2 py-2 px-4">
+        <p class="mt-1 text-xs text-red-500 italic" v-if="errors.hasOwnProperty('title')">{{ errors.title.message }}</p>
       </div>
     </div>
   </FormModal>
@@ -110,7 +116,8 @@ export default {
       note: {
         title: '',
         folder_id: null
-      }
+      },
+      errors: {}
     }
   },
   mounted() {
@@ -125,8 +132,13 @@ export default {
     },
     submit() {
       this.$store.dispatch('note/create', this.note).then(({ data }) => {
-        this.$refs.modal.close()
+        this.goToNext(data)  
+      }).catch(({ data }) => {
+        this.errors = data;
       })
+    },
+    goToNext(data) {
+      this.$refs.modal.close()
     }
   }
 }

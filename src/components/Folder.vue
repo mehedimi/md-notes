@@ -19,7 +19,7 @@
         </router-link>
         <Menu as="div" v-if="folder.id" class="relative flex">
           <MenuButton class="mr-3">
-            <i class="las la-ellipsis-h"></i>
+            <i class="las la-ellipsis-h text-xl"></i>
           </MenuButton>
 
           <transition
@@ -35,7 +35,7 @@
             >
               <div class="p-1 px-1">
                 <MenuItem v-slot="{ active }">
-                  <button :class="[active ? 'bg-gray-300 text-gray-900' : 'text-gray-900','group flex rounded-md items-center w-full px-2 py-2 text-sm']">
+                  <button :class="[active ? 'bg-gray-300 text-gray-900' : 'text-gray-900','group flex rounded-md items-center w-full px-2 py-1 text-sm']">
                     <i class="las la-pen mr-3 text-xl"></i>
                     Edit
                   </button>
@@ -45,7 +45,7 @@
                 <MenuItem v-slot="{ active }">
                   <button
                     @click="$refs.deleteFolder.openModal(folder.id)"
-                    :class="[active ? 'bg-red-500 text-white' : 'text-red-500','group flex rounded-md items-center w-full px-2 py-2 text-sm',]">
+                    :class="[active ? 'bg-red-500 text-white' : 'text-red-500','group flex rounded-md items-center w-full px-2 py-1 text-sm',]">
                       <i class="las la-trash mr-3 text-xl"></i>
                       Delete
                   </button>

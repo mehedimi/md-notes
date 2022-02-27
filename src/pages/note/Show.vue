@@ -1,6 +1,6 @@
 <template>
   <Notes/>
-  <Note/>
+  <Note v-if="isLoaded" />
 </template>
 
 <script>
@@ -12,10 +12,17 @@ export default {
     Notes,
     Note
   },
+  data() {
+    return {
+      isLoaded: false
+    }
+  },
   created() {
     const { note } = this.$route.params;
 
-    this.$store.dispatch('note/show', note)
+    this.$store.dispatch('note/show', note).then((note) => {
+      this.isLoaded = true
+    })
   }
 }
 </script>

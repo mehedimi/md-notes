@@ -1,26 +1,73 @@
 <template>
-    <div class="w-full flex flex-col h-full p-6">
-        <div>
-            <div class="flex text-lg justify-between border-b border-gray-200 pb-3">
-                <h3 class="font-normal text-gray-700">
-                    <span class="mr-3">My Notes</span>
-                    <i class="fa-solid fa-angle-right"></i>
-                    <span class="ml-5">System Database Week 4</span>
-                </h3>
-                <button>
-                    <i class="fa-solid fa-ellipsis"></i>
-                </button>
-            </div>
-        </div>
+    <div class="w-full flex flex-col h-full px-6 bg-white">
         <div class="overflow-x-auto h-screen flex flex-col mt-3">
             <div class="border-b border-gray-200 pb-3 mb-4">
-                <h1 class="text-xl text-gray-800">{{ note.title }}</h1>
+                <div class="flex justify-between">
+                  <h1 class="text-2xl text-gray-500">{{ note.title  }}</h1>
+                  <Menu as="div" class="relative inline-block text-left">
+                    <div>
+                      <MenuButton class="inline-flex justify-center text-stone-600 hover:text-stone-800 transition">
+                        <i class="las la-ellipsis-h text-3xl"></i>
+                      </MenuButton>
+                    </div>
+
+                    <transition
+                        enter-active-class="transition duration-100 ease-out"
+                        enter-from-class="transform scale-95 opacity-0"
+                        enter-to-class="transform scale-100 opacity-100"
+                        leave-active-class="transition duration-75 ease-in"
+                        leave-from-class="transform scale-100 opacity-100"
+                        leave-to-class="transform scale-95 opacity-0"
+                    >
+                      <MenuItems
+                          class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      >
+                        <div class="px-1 py-1">
+                          <MenuItem v-slot="{ active }" @click="toggleFullScreen">
+                            <button
+                                :class="[
+                                    active ? 'bg-gray-300' : 'text-gray-900',
+                                    'group flex rounded-md items-center w-full px-2 py-1 text-sm transition',
+                                    ]"
+                            >
+                              <i :class="`las la-${isFullScreen ? 'compress' : 'expand' } text-xl mr-2`"></i> {{ isFullScreen ? 'Leave ': '' }}Full Screen
+                            </button>
+                          </MenuItem>
+                          <MenuItem v-slot="{ active }">
+                            <button
+                                :class="[
+                                    active ? 'bg-gray-300' : 'text-gray-900',
+                                    'group flex rounded-md items-center w-full px-2 py-1 text-sm transition',
+                                    ]"
+                            >
+                              <i class="las la-external-link-alt text-xl mr-2"></i> Move
+                            </button>
+                          </MenuItem>
+                        </div>
+
+                        <div class="px-1 py-1">
+                          <MenuItem v-slot="{ active }">
+                            <button
+                                :class="[
+                                active ? 'bg-red-500 text-white' : 'text-red-500',
+                                'group flex rounded-md items-center w-full px-2 py-1 text-sm transition',
+                                ]"
+                            >
+                              <i class="las la-trash text-xl mr-2"></i> Delete
+                            </button>
+                          </MenuItem>
+                        </div>
+                      </MenuItems>
+                    </transition>
+                  </Menu>
+                </div>
+                
                 <table class="mt-4">
                     <tbody>
-                        <!-- <tr>
+                        <tr>
                             <td class="w-36 text-stone-400 font-light py-2">Last Updated</td>
-                            <td class="py-2 text-gray-700">{{ note.updated_at.calendar() }}</td>
-                        </tr> -->
+                            <td class="py-2 text-gray-700">{{ lastUpdatedAt }}</td>
+                        </tr>
                         <!-- <tr>
                             <td class="w-36 text-stone-400 font-light py-2">Tags</td>
                             <td class="py-2">
@@ -38,20 +85,56 @@
                     </tbody>
                 </table>
             </div>
-            <textarea placeholder="Start typing..." v-model="note.content" id="note-editor" class="h-full w-full border-none focus:border-none outline-none focus:outline-none"></textarea>
+            <Editor v-if="hasNote"/>
         </div>
+        <!-- <DeleteNote/> -->
     </div>
 </template>
 
 <script>
 import Tag from './Tag.vue'
-import { mapState } from 'vuex'
+import Editor from './Note/Editor.vue'
+import DeleteNote from './Confirm.vue'
+import { mapGetters, mapState } from 'vuex'
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import isEmpty from "lodash/isEmpty";
 
 export default {
     components: {
-        Tag
+        Tag,
+        Editor,
+        Menu,
+        MenuButton,
+        MenuItems,
+        MenuItem,
+        DeleteNote,
     },
-    computed: mapState('note', ['note'])
+    computed: {
+      ...mapState('note', ['note']),
+      ...mapGetters('note', ['lastUpdatedAt']),
+      hasNote() {
+        return ! isEmpty(this.note)
+      }
+    },
+    data() {
+        return {
+            isFullScreen: false
+        }
+    },
+    mounted() {
+        this.$el.addEventListener('fullscreenchange', () => {
+            this.isFullScreen = Boolean(document.fullscreenElement)
+        })
+    },
+    methods: {
+        toggleFullScreen() {
+            if(this.isFullScreen) {
+                document.exitFullscreen()
+            } else {
+                this.$el.requestFullscreen()
+            }
+        }
+    }
 }
 
 </script>

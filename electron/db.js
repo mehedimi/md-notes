@@ -50,6 +50,10 @@ exports.get = (table, parameters = {}) => {
         sql += ' LIMIT = ?'
         values.push(parameters.limit)
     }
+
+    if (parameters.orderBy) {
+        sql += ' ORDER BY '+ parameters.orderBy;
+    }
     
     return db.prepare(sql).all(...values) || [];
 }
@@ -69,6 +73,22 @@ exports.delete = (table, params = {}) => {
         sql += w[0]
         values = values.concat(w[1])
     }
+
+    return db.prepare(sql).run(...values)
+}
+
+
+exports.update = (table, id, data = {}) => {
+    const values = [];
+    const columns = [];
+    Object.keys(data).forEach((column) => {
+        columns.push(`${column} = ?`)
+        values.push(data[column])
+    })
+
+    values.push(id)
+
+    let sql = `UPDATE ${table} SET ${columns.join(', ')} WHERE id = ?`
 
     return db.prepare(sql).run(...values)
 }

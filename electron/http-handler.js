@@ -1,6 +1,6 @@
 const Router = require('router');
 const finalhandler = require('finalhandler')
-const { get, create, find, delete: deleteR } = require('./db')
+const { get, create, find, delete: deleteR, update } = require('./db')
 const bodyParser = require('body-parser')
 const moment = require('moment')
 const { Validator } = require('node-input-validator')
@@ -9,6 +9,7 @@ const pickBy = require('lodash/pickBy')
 const isEmpty = require('lodash/isEmpty')
 const tables = require('./data/tables');
 const queryString = require('query-string')
+const removeMarkdown = require('remove-markdown')
 
 const router = Router();
 
@@ -31,7 +32,9 @@ router.use((req, res, next) => {
  * @param {Electron.ProtocolResponse} res
  */
 router.get('/folders', (req, res) => {
-    const data = get(tables.FOLDER);
+    const data = get(tables.FOLDER, {
+        orderBy: 'name asc'
+    });
 
     res.end(JSON.stringify({
         data
@@ -94,7 +97,8 @@ router.delete('/folders/:folder', (req, res) => {
  */
 router.get('/notes', (request, response) => {
     const parameters = {
-        select: 'id, title, SUBSTRING(content, 0, 80) as content, created_at, updated_at'
+        select: 'id, title, SUBSTRING(content, 0, 80) as content, created_at, updated_at',
+        orderBy: 'id desc'
     };
 
     const query = pickBy(request.query, (value, key) => {
@@ -123,7 +127,12 @@ router.get('/notes', (request, response) => {
     const data = get('notes', parameters);
 
     response.end(JSON.stringify({
-        data
+        data: data.map((note) => {
+            return {
+                ...note,
+                content: removeMarkdown(note.content)
+            }
+        })
     }))
 });
 
@@ -139,6 +148,10 @@ router.post('/notes', async (request, response) => {
         folder_id: 'required'
     })
 
+    v.niceNames({
+        folder_id: 'folder'
+    })
+
     const matched = await v.check();
     
     if (! matched) {
@@ -151,6 +164,7 @@ router.post('/notes', async (request, response) => {
     body = Object.assign(body, {
         created_at: moment().format(),
         updated_at: moment().format(),
+        content: body.content || ''
     })
 
     const data = create('notes', body);
@@ -170,6 +184,31 @@ router.get('/notes/:note', (req, res) => {
 
     res.end(JSON.stringify({
         data
+    }))
+})
+
+router.patch('/notes/:note', async (req, res) => {
+    const { note: noteId } = req.params;
+
+    const v = new Validator(req.body, {
+        content: 'required|string',
+    })
+
+    const matched = await v.check();
+
+    if (! matched) {
+        res.statusCode = 422;
+        return res.end(JSON.stringify(v.errors))
+    }
+    const updatedAt = moment().format();
+
+    update(tables.NOTE, noteId, {
+        content: req.body.content,
+        updated_at: updatedAt
+    })
+
+    res.end(JSON.stringify({
+        updated_at: updatedAt
     }))
 })
 
