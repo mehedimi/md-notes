@@ -14,7 +14,7 @@ export default {
     getters: {
         lastUpdatedAt(state) {
             if (state.note.updated_at) {
-                return moment(state.note.updated_at).calendar()
+                return moment(state.note.updated_at).fromNow()
             }
 
             return '';
@@ -57,6 +57,9 @@ export default {
             return Api.delete(`/notes/${noteId}`).then(() => {
                 commit('DELETE_NOTE', noteId)
             })
+        },
+        update(context, { noteId, data }) {
+            return Api.patch(`/notes/${noteId}`, data)
         },
         updateContent({ state, commit}) {
             commit('SET_UPDATING', true)

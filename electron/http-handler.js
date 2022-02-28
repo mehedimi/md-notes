@@ -190,20 +190,12 @@ router.get('/notes/:note', (req, res) => {
 router.patch('/notes/:note', async (req, res) => {
     const { note: noteId } = req.params;
 
-    const v = new Validator(req.body, {
-        content: 'required|string',
-    })
+    const data = pick(req.body, ['title', 'content'])
 
-    const matched = await v.check();
-
-    if (! matched) {
-        res.statusCode = 422;
-        return res.end(JSON.stringify(v.errors))
-    }
     const updatedAt = moment().format();
 
     update(tables.NOTE, noteId, {
-        content: req.body.content,
+        ...data,
         updated_at: updatedAt
     })
 
@@ -212,6 +204,19 @@ router.patch('/notes/:note', async (req, res) => {
     }))
 })
 
+router.delete('/notes/:note', (req, res) => {
+    const { note: noteId } = req.params;
+
+    deleteR(tables.NOTE, {
+        where: [
+            ['id', noteId]
+        ]
+    })
+
+    res.end(JSON.stringify({
+        message: 'Success!'
+    }))
+})
 
 /**
  * Handle custom protocol request

@@ -4,8 +4,8 @@
     <Folder class="h-full"/>
     <div class="h-[136px]">
       <CreateFolder></CreateFolder>
-      <button class="px-4 py-3 w-full bg-white text-gray-700 text-sm rounded-lg flex items-center">
-        <i class="fa-solid fa-gear text-xl mr-4"></i>
+      <button class="px-5 py-3 w-full bg-white text-gray-700 text-sm rounded-lg flex items-center">
+        <i class="las la-cog text-xl mr-4"></i>
         <span>Settings</span>
       </button>
     </div>

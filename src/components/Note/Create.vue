@@ -1,6 +1,6 @@
 <template>
   <FormModal ref="modal">
-    <template v-slot:title>Create note</template>
+    <template v-slot:title>Create Note</template>
     <div class="mt-2">
       <div class="mt-4">
         <label class="text-sm">Folder</label>
@@ -28,6 +28,7 @@
             >
               <ListboxOptions
                 class="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                v-if="folders.length"
               >
                 <ListboxOption
                   v-slot="{ active, selected }"
@@ -131,13 +132,30 @@ export default {
       this.$refs.modal.close()
     },
     submit() {
-      this.$store.dispatch('note/create', this.note).then(({ data }) => {
-        this.goToNext(data)  
+      this.$store.dispatch('note/create', this.note).then((note) => {
+        this.goToNext(note)
       }).catch(({ data }) => {
         this.errors = data;
       })
     },
-    goToNext(data) {
+    goToNext(note) {
+      const params = this.$route.params;
+      if (params.hasOwnProperty('folder')) {
+        this.$router.push({
+          name: 'folder.note.show',
+          params: {
+            ...params,
+            note: note.id
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'note.show',
+          params: {
+            note: note.id
+          }
+        })
+      }
       this.$refs.modal.close()
     }
   }

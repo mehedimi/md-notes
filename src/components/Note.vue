@@ -3,7 +3,8 @@
         <div class="overflow-x-auto h-screen flex flex-col mt-3">
             <div class="border-b border-gray-200 pb-3 mb-4">
                 <div class="flex justify-between">
-                  <h1 class="text-2xl text-gray-500">{{ note.title  }}</h1>
+                  <input type="text" @keyup.enter="isEditTitle = false" v-model="note.title" ref="noteTitle" @blur="isEditTitle = false" class="rounded-md w-full border-gray-200 focus:border-gray-200 focus:ring-gray-300 transition py-2 px-4" v-if="isEditTitle">
+                  <h1 class="text-2xl text-gray-500" @click="isEditTitle = true" v-else>{{ note.title  }} <em class="text-xs" v-show="updating">Saving</em></h1>
                   <Menu as="div" class="relative inline-block text-left">
                     <div>
                       <MenuButton class="inline-flex justify-center text-stone-600 hover:text-stone-800 transition">
@@ -52,6 +53,7 @@
                                 active ? 'bg-red-500 text-white' : 'text-red-500',
                                 'group flex rounded-md items-center w-full px-2 py-1 text-sm transition',
                                 ]"
+                                @click="$refs.deleteNoteModal.openModal"
                             >
                               <i class="las la-trash text-xl mr-2"></i> Delete
                             </button>
@@ -62,11 +64,11 @@
                   </Menu>
                 </div>
                 
-                <table class="mt-4">
+                <table class="mt-4 text-sm">
                     <tbody>
                         <tr>
                             <td class="w-36 text-stone-400 font-light py-2">Last Updated</td>
-                            <td class="py-2 text-gray-700">{{ lastUpdatedAt }}</td>
+                            <td class="py-2 text-gray-700" :title="note.updated_at">{{ lastUpdatedAt }}</td>
                         </tr>
                         <!-- <tr>
                             <td class="w-36 text-stone-400 font-light py-2">Tags</td>
@@ -87,7 +89,10 @@
             </div>
             <Editor v-if="hasNote"/>
         </div>
-        <!-- <DeleteNote/> -->
+        <DeleteNote ref="deleteNoteModal" @ok="deleteNote">
+            <template v-slot:title>Warning!</template>
+            Are your sure, you want to delete this note?
+        </DeleteNote>
     </div>
 </template>
 
@@ -110,7 +115,7 @@ export default {
         DeleteNote,
     },
     computed: {
-      ...mapState('note', ['note']),
+      ...mapState('note', ['note', 'updating']),
       ...mapGetters('note', ['lastUpdatedAt']),
       hasNote() {
         return ! isEmpty(this.note)
@@ -118,13 +123,30 @@ export default {
     },
     data() {
         return {
-            isFullScreen: false
+          isFullScreen: false,
+          isEditTitle: false
         }
     },
     mounted() {
         this.$el.addEventListener('fullscreenchange', () => {
             this.isFullScreen = Boolean(document.fullscreenElement)
         })
+    },
+    watch: {
+      isEditTitle(value) {
+        if (value) {
+          this.$nextTick(() => {
+            this.$refs.noteTitle.focus()
+          })
+        } else {
+          this.$store.dispatch('note/update', {
+            noteId: this.note.id,
+            data: {
+              title: this.note.title
+            }
+          })
+        }
+      }
     },
     methods: {
         toggleFullScreen() {
@@ -133,6 +155,22 @@ export default {
             } else {
                 this.$el.requestFullscreen()
             }
+        },
+        deleteNote() {
+          this.$store.dispatch('note/delete', this.note.id).then(() => {
+            if (this.$route.name === 'note.show') {
+              this.$router.push({
+                name: 'folder.index'
+              })
+            } else {
+              this.$router.push({
+                name: 'folder.notes.index',
+                params: {
+                  folder: this.$route.params.folder
+                }
+              })
+            }
+          })
         }
     }
 }

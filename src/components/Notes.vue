@@ -2,8 +2,8 @@
     <div class="min-w-[20rem] w-80 px-4 flex flex-col border-r border-gray-200">
         <div class="pt-4">
             <h2 class="text-3xl mb-5">My Notes</h2>
-            <button @click="$refs.createNote.open" class="p-4 w-full bg-stone-100 rounded-lg flex items-center text-sm">
-                <i class="fa-solid fa-plus mr-3"></i>
+            <button @click="$refs.createNote.open" class="px-4 py-3 w-full bg-stone-100 rounded-lg flex items-center text-sm hover:bg-stone-200 transition">
+                <i class="las la-plus mr-2 text-lg"></i>
                 <span>Add new note</span>
             </button>
         </div>

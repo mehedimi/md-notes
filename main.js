@@ -2,7 +2,7 @@ const { app, BrowserWindow, protocol } = require("electron");
 const path = require("path");
 const { isMac } = require("./electron/platforms");
 const { handle : HTTPHandler } = require('./electron/http-handler')
-const { migration : databaseMigration } = require('./electron/db')
+const databaseMigration = require('./electron/data/migration')
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -21,7 +21,9 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-    protocol.registerHttpProtocol('md-notes', HTTPHandler)
+    protocol.registerHttpProtocol('md-notes', (request, callback) => {
+
+    })
 
     createWindow();
 
