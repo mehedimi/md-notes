@@ -1,7 +1,7 @@
 const { app, BrowserWindow, protocol } = require("electron");
 const path = require("path");
 const { isMac } = require("./electron/platforms");
-const { handle : HTTPHandler } = require('./electron/http-handler')
+const { requestListener } = require('./electron/http-handler')
 const databaseMigration = require('./electron/data/migration')
 
 function createWindow() {
@@ -10,19 +10,20 @@ function createWindow() {
         height: 720,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
+            contextIsolation: false,
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true
         },
     });
 
     win.loadFile("dist/index.html");
 
     databaseMigration()
-
-    win.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
     protocol.registerHttpProtocol('md-notes', (request, callback) => {
-
+        callback('Response');
     })
 
     createWindow();

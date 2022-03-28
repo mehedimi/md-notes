@@ -17,12 +17,22 @@ export default {
       isLoaded: false
     }
   },
-  created() {
-    const { note } = this.$route.params;
+  methods: {
+    find() {
+      const { note } = this.$route.params;
 
-    this.$store.dispatch('note/show', note).then((note) => {
-      this.isLoaded = true
-    })
+      this.$store.dispatch('note/show', note).then((note) => {
+        this.isLoaded = true
+      })
+    }
+  },
+  watch: {
+    '$route.params.note': {
+      handler() {
+        this.find()
+      },
+      immediate: true
+    }
   }
 }
 </script>

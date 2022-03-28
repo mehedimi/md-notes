@@ -99,6 +99,30 @@ export default {
         },
         SET_ATTR(state, { attr, value }) {
             state.note[attr] = value
+        },
+        ASSIGN_TAG(state, tag) {
+            state.note.tags.push(tag)
+        },
+        DETACH_TAG(state, tagId) {
+            const index = state.note.tags.findIndex((t) => t.id === tagId);
+            if (index > -1) {
+                state.note.tags.splice(index, 1)
+            }
+        },
+        REMOVE_TAG_FROM_LIST(state, { tagId, noteId }) {
+            const noteIndex = state.notes.data.findIndex(note => note.id === Number(noteId))
+            if (noteIndex === -1) return
+
+            const tagIndex = state.notes.data[noteIndex].tags.findIndex(tag => tag.id === Number(tagId))
+            if (tagIndex === -1) return;
+            state.notes.data[noteIndex].tags.splice(tagIndex, 1)
+        },
+        ADD_TAG_TO_LIST(state, { noteId, tag }) {
+            const noteIndex = state.notes.data.findIndex(note => note.id === Number(noteId))
+            console.log(noteIndex)
+            if (noteIndex === -1) return
+
+            state.notes.data[noteIndex].tags.push(tag)
         }
     }
 }

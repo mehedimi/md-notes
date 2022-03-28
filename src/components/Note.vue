@@ -21,23 +21,23 @@
                         leave-to-class="transform scale-95 opacity-0"
                     >
                       <MenuItems
-                          class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                          class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
                       >
                         <div class="px-1 py-1">
                           <MenuItem v-slot="{ active }" @click="toggleFullScreen">
                             <button
                                 :class="[
-                                    active ? 'bg-gray-300' : 'text-gray-900',
+                                    active ? 'bg-stone-200' : 'text-gray-900',
                                     'group flex rounded-md items-center w-full px-2 py-1 text-sm transition',
                                     ]"
                             >
                               <i :class="`las la-${isFullScreen ? 'compress' : 'expand' } text-xl mr-2`"></i> {{ isFullScreen ? 'Leave ': '' }}Full Screen
                             </button>
                           </MenuItem>
-                          <MenuItem v-slot="{ active }">
+                          <MenuItem v-slot="{ active }" @click="$refs.move.open">
                             <button
                                 :class="[
-                                    active ? 'bg-gray-300' : 'text-gray-900',
+                                    active ? 'bg-stone-200' : 'text-gray-900',
                                     'group flex rounded-md items-center w-full px-2 py-1 text-sm transition',
                                     ]"
                             >
@@ -70,20 +70,17 @@
                             <td class="w-36 text-stone-400 font-light py-2">Last Updated</td>
                             <td class="py-2 text-gray-700" :title="note.updated_at">{{ lastUpdatedAt }}</td>
                         </tr>
-                        <!-- <tr>
+                        <tr>
                             <td class="w-36 text-stone-400 font-light py-2">Tags</td>
                             <td class="py-2">
-                                <ul class="flex gap-3">
-                                    <Tag as="a" href="#" v-for="tag, index in note.tags" :key="index">
-                                        {{ tag }}
-                                    </Tag>
-                                    <Tag as="button">
-                                        <i class="fa-solid fa-plus mr-3"></i>
-                                        <span>Add new Tag</span>
-                                    </Tag>
-                                </ul>
+                                <div class="flex gap-3 flex-wrap">
+                                  <Tag @click.prevent="detachTag(tag.id)" as="a" href="#" class="hover:bg-red-500 hover:text-white transition" v-for="(tag, index) in note.tags" :key="index">
+                                      {{ tag.name }}
+                                  </Tag>
+                                  <TagCreate />
+                                </div>
                             </td>
-                        </tr> -->
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -93,26 +90,32 @@
             <template v-slot:title>Warning!</template>
             Are your sure, you want to delete this note?
         </DeleteNote>
+        <Move ref="move"></Move>
     </div>
 </template>
 
 <script>
 import Tag from './Tag.vue'
+import TagCreate from './Tag/Create.vue'
 import Editor from './Note/Editor.vue'
 import DeleteNote from './Confirm.vue'
+import Move from './Move.vue'
 import { mapGetters, mapState } from 'vuex'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+
 import isEmpty from "lodash/isEmpty";
 
 export default {
     components: {
-        Tag,
-        Editor,
-        Menu,
-        MenuButton,
-        MenuItems,
-        MenuItem,
-        DeleteNote,
+      Tag,
+      TagCreate,
+      Editor,
+      Menu,
+      Move,
+      MenuButton,
+      MenuItems,
+      MenuItem,
+      DeleteNote,
     },
     computed: {
       ...mapState('note', ['note', 'updating']),
@@ -149,29 +152,42 @@ export default {
       }
     },
     methods: {
-        toggleFullScreen() {
-            if(this.isFullScreen) {
-                document.exitFullscreen()
-            } else {
-                this.$el.requestFullscreen()
-            }
-        },
-        deleteNote() {
-          this.$store.dispatch('note/delete', this.note.id).then(() => {
-            if (this.$route.name === 'note.show') {
-              this.$router.push({
-                name: 'folder.index'
-              })
-            } else {
-              this.$router.push({
-                name: 'folder.notes.index',
-                params: {
-                  folder: this.$route.params.folder
-                }
-              })
-            }
-          })
+      toggleFullScreen() {
+        if(this.isFullScreen) {
+            document.exitFullscreen()
+        } else {
+            this.$el.requestFullscreen()
         }
+      },
+      deleteNote() {
+        this.$store.dispatch('note/delete', this.note.id).then(() => {
+          if (this.$route.name === 'note.show') {
+            this.$router.push({
+              name: 'folder.index'
+            })
+          } else {
+            this.$router.push({
+              name: 'folder.notes.index',
+              params: {
+                folder: this.$route.params.folder
+              }
+            })
+          }
+        })
+      },
+      detachTag(tagId) {
+        const { note: noteId } = this.$route.params
+        this.$store.dispatch('tag/detach', {
+          tagId,
+          noteId
+        }).then((tagId) => {
+          this.$store.commit('note/DETACH_TAG', tagId)
+          this.$store.commit('note/REMOVE_TAG_FROM_LIST', {
+            tagId,
+            noteId
+          })
+        })
+      }
     }
 }
 

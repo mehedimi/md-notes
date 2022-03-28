@@ -10,7 +10,7 @@ export default {
   },
   methods: {
     find() {
-      const {note: noteId} = this.$route.params;
+      const { note: noteId } = this.$route.params;
       this.$store.dispatch('note/show', noteId)
     }
   },

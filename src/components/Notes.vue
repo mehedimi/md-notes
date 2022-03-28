@@ -14,9 +14,9 @@
                 <h2 class="text-gray-400 mb-1">{{ note.title }}</h2>
                 <p class="text-gray-400 font-light text-sm" v-if="note.content">{{ note.content.substr(0, 75) }}</p>
                 <em class="text-xs text-gray-400 font-light" v-else>No Content</em>
-                <!-- <ul class="flex tags gap-2 mt-4" v-if="note.tags.length">
-                <li v-for="tag, index in note.tags" :key="index" class="px-2 bg-stone-100 rounded text-gray-400 text-xs leading-6">{{ tag }}</li>
-                </ul> -->
+                <ul class="flex tags gap-2 mt-4 flex-wrap" v-if="note.tags.length">
+                  <Tag v-for="(tag, index) in tags(note.tags)">{{ tag.name }}</Tag>
+                </ul>
             </router-link>
           </li>
         </ul>
@@ -27,11 +27,13 @@
 <script>
 import { mapState } from 'vuex'
 import Create from './Note/Create.vue'
+import Tag from './Tag.vue'
 import moment from 'moment'
 
 export default {
   components: {
-    Create
+    Create,
+    Tag
   },
   props: {
     folderId: {
@@ -68,6 +70,22 @@ export default {
       return {
         note: noteId
       }
+    },
+    tags(tags) {
+      let length = 0;
+      const newTags = []
+      for (let i = 0; i < tags.length; i++) {
+        length += tags[i].name.length
+        newTags.push(tags[i])
+
+        if (length >= 13 && (tags.length - (i + 1)) > 0) {
+          newTags.push({
+            name: `+${tags.length - (i + 1)} more`
+          })
+          break;
+        }
+      }
+      return newTags;
     }
   }
 }
@@ -88,6 +106,6 @@ export default {
     }
 
     .notes .note.is-active .tags li{
-        @apply text-gray-500 bg-stone-200
+        @apply text-gray-500 bg-stone-100
     }
 </style>

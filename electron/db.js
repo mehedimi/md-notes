@@ -10,17 +10,18 @@ exports.db = db;
 
 /**
  * Create record
- * 
- * @param {String} table 
- * @param {Object} data 
+ *
+ * @param {String} table
+ * @param {Object} data
+ * @param ignore
  */
-exports.create = (table, data) => {
+exports.create = (table, data, ignore = false) => {
     const columns = Object.keys(data).join(', ');
     const values = Object.keys(data).map((column) => {
         return '@'+column;
     }).join(', ');
 
-    const statement = db.prepare(`INSERT INTO ${table} (${columns}) VALUES(${values})`)
+    const statement = db.prepare(`INSERT ${ignore ? 'OR IGNORE': ''} INTO ${table} (${columns}) VALUES(${values})`)
 
     return statement.run(data)
 }

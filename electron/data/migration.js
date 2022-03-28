@@ -70,4 +70,21 @@ module.exports = () => {
             icon: 'address-book'
         })
     }
+
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS tags (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR UNIQUE
+        )
+    `);
+
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS note_tag (
+        tag_id INTEGER,
+        note_id INTEGER,
+        PRIMARY KEY (tag_id, note_id),
+        FOREIGN KEY (note_id) REFERENCES notes ON DELETE CASCADE,
+        FOREIGN KEY (tag_id) REFERENCES tags ON DELETE CASCADE
+        )
+    `);
 }

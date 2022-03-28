@@ -1,4 +1,6 @@
 module.exports = {
     FOLDER: 'folders',
-    NOTE: 'notes'
+    NOTE: 'notes',
+    NOTE_TAG: 'note_tag',
+    TAG: 'tags'
 }

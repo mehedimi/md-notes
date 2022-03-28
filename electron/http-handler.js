@@ -1,6 +1,6 @@
 const Router = require('router');
 const finalhandler = require('finalhandler')
-const { get, create, find, delete: deleteR, update } = require('./db')
+const { get, create, find, delete: deleteR, update, db} = require('./db')
 const bodyParser = require('body-parser')
 const moment = require('moment')
 const { Validator } = require('node-input-validator')
@@ -90,6 +90,10 @@ router.delete('/folders/:folder', (req, res) => {
 })
 
 /**
+ * Notes
+ */
+
+/**
  * Get all notes
  * 
  * @param {Electron.ProtocolRequest} request 
@@ -126,11 +130,21 @@ router.get('/notes', (request, response) => {
     }
     const data = get('notes', parameters);
 
+    const tagsQuery = `SELECT ${tables.TAG}.*, ${tables.NOTE_TAG}.note_id FROM ${tables.TAG} JOIN ${tables.NOTE_TAG} 
+        ON ${tables.TAG}.id = ${tables.NOTE_TAG}.tag_id AND ${tables.NOTE_TAG}.note_id 
+        IN(${data.map(s => '?').join(', ')})`;
+
+    const tags = db.prepare(tagsQuery).all(...data.map(n => n.id))
+
+
+    // const tags = db.prepare(`SELECT * FROM ${tables.TAG} JOIN ${tables.NOTE_TAG} ON ${tables.TAG}.id = ${tables.NOTE_TAG}.tag_id`)
+
     response.end(JSON.stringify({
         data: data.map((note) => {
             return {
                 ...note,
-                content: removeMarkdown(note.content)
+                content: removeMarkdown(note.content),
+                tags: tags.filter(t => t.note_id === note.id)
             }
         })
     }))
@@ -182,6 +196,10 @@ router.get('/notes/:note', (req, res) => {
 
     const data = find(tables.NOTE, noteId)
 
+    data.tags = db.prepare(
+        `SELECT id, name FROM ${tables.TAG} JOIN ${tables.NOTE_TAG} on tags.id = note_tag.tag_id AND note_tag.note_id = ?`
+    ).all(noteId)
+
     res.end(JSON.stringify({
         data
     }))
@@ -218,12 +236,83 @@ router.delete('/notes/:note', (req, res) => {
     }))
 })
 
+router.post('/notes/:note/tags', async (req, res) => {
+    const { note: note_id } = req.params;
+    const { tag_id } = req.body;
+
+   const { changes } = create(tables.NOTE_TAG, {
+        note_id,
+        tag_id
+    }, true)
+
+    if (! changes) {
+        res.statusCode = 422
+    }
+
+    res.end(JSON.stringify({
+        success: true
+    }))
+})
+
+router.delete('/notes/:note/tags/:tag', (req, res) => {
+    const { note: noteId, tag: tagId } = req.params;
+
+    const d = deleteR(tables.NOTE_TAG, {
+        where: [
+            ['tag_id', tagId],
+            ['note_id', noteId],
+        ]
+    })
+
+    console.log(d)
+
+    res.end(JSON.stringify({
+        success: true
+    }))
+})
+
+
+/**
+ * Tags
+ */
+
+router.get('/tags', (req, res) => {
+    const data = get(tables.TAG);
+
+    return res.end(JSON.stringify({
+        data
+    }))
+});
+
+router.post('/tags', async (req, res) => {
+    const v = new Validator(req.body, {
+        name: 'required|string|maxLength:30'
+    })
+
+    const matched = await v.check();
+
+    if (! matched) {
+        res.statusCode = 422;
+        return res.end(JSON.stringify(v.errors))
+    }
+
+    const tagResponse = create(tables.TAG, pick(req.body, ['name']), true);
+
+    if (! tagResponse.changes) {
+        res.statusCode = 422;
+    }
+
+    res.end(JSON.stringify({
+        id: tagResponse.lastInsertRowid,
+        name: req.body.name
+    }))
+})
+
+
 /**
  * Handle custom protocol request
- * 
- * @param {Electron.ProtocolRequest} request 
- * @param {Electron.ProtocolResponse} response 
+ *
  */
 exports.requestListener = (request, response) => {
-    router(request, response, finalhandler(request, response))
+    return router(request, response, finalhandler(request, response))
 }

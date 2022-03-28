@@ -1,5 +1,5 @@
 <template>
-    <div class="flex overflow-y-hidden">
+    <div class="flex overflow-y-auto">
         <div class="w-6/12 note-edit h-screen" ref="textarea"></div>
         <Preview />
     </div>
