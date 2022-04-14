@@ -1,8 +1,11 @@
-const { app, BrowserWindow, protocol } = require("electron");
+const { app, BrowserWindow, protocol} = require("electron");
 const path = require("path");
 const { isMac } = require("./electron/platforms");
-const { requestListener } = require('./electron/http-handler')
 const databaseMigration = require('./electron/data/migration')
+require('./electron/ipc-routes')
+
+const isDev = process.env.IS_DEV == "true" ? true : false;
+
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -10,13 +13,15 @@ function createWindow() {
         height: 720,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
-            contextIsolation: false,
-            nodeIntegration: true,
-            nodeIntegrationInWorker: true
+            contextIsolation: true
         },
     });
 
-    win.loadFile("dist/index.html");
+    win.loadURL(isDev
+        ? 'http://localhost:3000'
+        : `file://${path.join(__dirname, '../dist/index.html')}`)
+
+    win.webContents.openDevTools();
 
     databaseMigration()
 }
@@ -33,7 +38,6 @@ app.whenReady().then(() => {
             createWindow();
         }
     });
-
 
 });
 

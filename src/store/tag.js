@@ -10,7 +10,7 @@ export default {
     },
     actions: {
         get({commit}) {
-            Api.get('/tags').then(({ data }) => {
+            tags.get().then((data) => {
                 commit('SET_TAGS', data)
             })
         },

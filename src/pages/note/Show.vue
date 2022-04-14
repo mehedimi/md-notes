@@ -21,7 +21,7 @@ export default {
     find() {
       const { note } = this.$route.params;
 
-      this.$store.dispatch('note/show', note).then((note) => {
+      this.$store.dispatch('note/show', note).then(() => {
         this.isLoaded = true
       })
     }

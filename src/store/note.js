@@ -1,4 +1,3 @@
-import Api from '../api/api';
 import moment from 'moment';
 
 export default {
@@ -22,50 +21,49 @@ export default {
     },
     actions: {
         get({ commit }, payload = {}) {
-            const { folderId: folder_id, s } = payload
-            return Api.get('notes', {
-                params: {
-                    folder_id,
-                    s
-                }
-            }).then(({ data }) => {
-                commit('SET_NOTES', data)
+            notes.get(payload).then((data) => {
+                commit('SET_NOTES', data)  
             })
         },
         show({ commit }, noteId) {
-            commit('SET_NOTE', {})
             return new Promise((resolve, reject) => {
-                Api.get(`notes/${noteId}`).then(({ data }) => {
-                    commit('SET_NOTE', data.data)
+                notes.find(noteId).then(({ data }) => {
+                    commit('SET_NOTE', data)
                     resolve(data)
-                }).catch(({ response }) => {
-                    reject(response)
+                }).catch((error) => {
+                    reject(error)
                 })
             })
         },
         create({ commit }, note = {}) {
             return new Promise((resolve, reject) => {
-                Api.post('/notes', note).then(({ data }) => {
-                    commit('UNSHIFT_NOTE', data)
-                    resolve(data)
-                }).catch(({ response }) => {
-                    reject(response)
+                notes.create(Object.assign({}, note)).then((response) => {
+                    if (response.hasOwnProperty('errors')) {
+                        reject(response.errors)
+                    } else {
+                        resolve(response)
+                    }
                 })
             })
         },
         delete({ commit }, noteId) {
-            return Api.delete(`/notes/${noteId}`).then(() => {
-                commit('DELETE_NOTE', noteId)
+            return new Promise((resolve, reject) => {
+                notes.delete(noteId).then(() => {
+                    commit('DELETE_NOTE', noteId)
+                    resolve()
+                }).catch(() => {
+                    reject()
+                })
             })
         },
         update(context, { noteId, data }) {
-            return Api.patch(`/notes/${noteId}`, data)
+            return window.notes.update(noteId, data)
         },
         updateContent({ state, commit}) {
             commit('SET_UPDATING', true)
-            Api.patch(`notes/${state.note.id}`, {
+            return window.notes.update(state.note.id, {
                 content: state.note.content
-            }).then(({ data }) => {
+            }).then((data) => {
                 commit('SET_ATTR', {
                     attr: 'updated_at',
                     value: data.updated_at

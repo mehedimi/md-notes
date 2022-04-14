@@ -56,8 +56,9 @@ export default {
     submit() {
       this.$store.dispatch('folder/create', this.form).then(() => {
         this.reset()  
-      }).catch(({ data }) => {
-        this.errors = data;
+      }).catch((error) => {
+        console.log(error)
+        this.errors = error;
       })
     },
     reset() {

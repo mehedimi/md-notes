@@ -134,8 +134,8 @@ export default {
     submit() {
       this.$store.dispatch('note/create', this.note).then((note) => {
         this.goToNext(note)
-      }).catch(({ data }) => {
-        this.errors = data;
+      }).catch((errors) => {
+        this.errors = errors;
       })
     },
     goToNext(note) {

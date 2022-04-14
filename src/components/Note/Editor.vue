@@ -1,7 +1,14 @@
 <template>
+    <ul>
+      <li>
+        <button @click="preview = !preview">Preview {{ preview ? 'Off' : 'On' }}</button>
+      </li>
+    </ul>
     <div class="flex overflow-y-auto">
-        <div class="w-6/12 note-edit h-screen" ref="textarea"></div>
-        <Preview />
+      <div class="note-edit h-screen" :class="preview ? 'w-6/12' : 'w-full'" ref="textarea"></div>
+      <keep-alive>
+        <Preview v-if="preview"/>
+      </keep-alive>
     </div>
 </template>
 
@@ -22,6 +29,11 @@ export default {
         Preview
     },
     computed: mapState('note', ['note']),
+    data() {
+      return {
+        preview: false
+      }
+    },
     methods: {
       ...mapMutations('note', ['SET_CONTENT']),
       ...mapActions('note', ['updateContent'])

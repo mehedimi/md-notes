@@ -37,26 +37,26 @@ export default {
     actions: {
         create({commit}, payload) {
             return new Promise((resolve, reject) => {
-                Api.post('/folders', payload).then(({ data }) => {
-                    commit('ADD_FOLDER', data.data)
-                    resolve(data)
-                }).catch(({ response }) => {
-                    reject(response)
+                window.folders.create(Object.assign({}, payload)).then((response) => {
+                    if (response.hasOwnProperty('errors')) {
+                        reject(response.errors)
+                    } else {
+                        commit('ADD_FOLDER', response.data)
+                        resolve(response.data)
+                    }
                 })
             })
         },
         get({commit}) {
-            Api.get('/folders').then(({ data }) => {
-                commit('SET_FOLDERS', data)
+            window.folders.get().then((data) => {
+                commit('SET_FOLDERS', {data})
             })
         },
         delete({ commit }, folderId) {
             return new Promise((resolve, reject) => {
-                Api.delete(`/folders/${folderId}`).then(({ data }) => {
+                window.folders.delete(folderId).then((response) => {
                     commit('DELETE_FOLDER', folderId)
-                    resolve(data)
-                }).catch(({ response }) => {
-                    reject(response)
+                    resolve(response)
                 })
             })
         }
