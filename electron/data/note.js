@@ -6,7 +6,6 @@ const tables = require('./tables')
 
 module.exports = {
     get(query) {
-
         const parameters = {
             select: 'id, title, SUBSTRING(content, 0, 80) as content, created_at, updated_at',
             orderBy: 'id desc'

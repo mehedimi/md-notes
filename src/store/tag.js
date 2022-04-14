@@ -28,23 +28,17 @@ export default {
         },
         assign({ commit, state }, { noteId, tagId }) {
             return new Promise((resolve, reject) => {
-                Api.post(`/notes/${noteId}/tags`, {
-                    tag_id: tagId
-                }).then(() => {
-                    resolve(state.tags.data.find(t => t.id === Number(tagId)))
-                }).catch(({ response }) => {
-                    reject(response)
+                tags.assign(noteId, tagId).then((response) => {
+                    if (response.success) {
+                        resolve(state.tags.data.find(t => t.id === Number(tagId)))
+                    } else {
+                        reject()
+                    }
                 })
             })
         },
         detach({ commit }, { noteId, tagId }) {
-            return new Promise((resolve, reject) => {
-                Api.delete(`/notes/${noteId}/tags/${tagId}`).then(() => {
-                    resolve(tagId)
-                }).catch(({ response }) => {
-                    reject(response)
-                })
-            })
+            return tags.unassign(noteId, tagId)
         }
     },
     mutations: {

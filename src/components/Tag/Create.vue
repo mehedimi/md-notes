@@ -144,7 +144,7 @@ export default {
       })
     },
     assignTag(tagId) {
-      const { note: noteId } = this.$route.params;
+      const { noteId } = this.$route.params;
 
       this.assign({
         noteId,

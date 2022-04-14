@@ -33,5 +33,14 @@ contextBridge.exposeInMainWorld('folders', {
 contextBridge.exposeInMainWorld('tags', {
     get(query) {
         return ipcRenderer.invoke('get:tags', query)
+    },
+    assign(noteId, tagId) {
+        return ipcRenderer.invoke('post:notes/:note/tags/:tag', noteId, tagId)
+    },
+    unassign(noteId, tagId) {
+        return ipcRenderer.invoke('delete:notes/:note/tags/:tag', noteId, tagId)
+    },
+    create(tag) {
+        return ipcRenderer.invoke('post:tags', tag)
     }
 })

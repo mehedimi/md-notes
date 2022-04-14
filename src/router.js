@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [
     {
         path: '/',
-        redirect: '/folders'
+        redirect: '/notes'
     },
     {
         path: '/folders',
@@ -29,6 +29,18 @@ const routes = [
             {
                 path: 'notes/:note',
                 name: 'note.show',
+                component: () => import('./pages/note/Show.vue')
+            }
+        ]
+    },
+    {
+        path: '/notes',
+        name: 'notes.index',
+        component: () => import('./pages/note/Index.vue'),
+        children: [
+            {
+                path: ':noteId',
+                name: 'notes.show',
                 component: () => import('./pages/note/Show.vue')
             }
         ]

@@ -4,11 +4,7 @@
       <li
           class="flex align-center rounded-lg text-gray-400 hover:text-gray-900 transition"
           :class="{
-            'folder-active': (
-                  ($route.path.startsWith('/folders') && ! folder.id && ! $route.params.folder)
-                  ||
-                   ($route.path.startsWith('/folders') && folder.id == $route.params.folder)
-                )
+            'folder-active': ((folder.route.query === undefined && $route.query.folderId === undefined) || (folder.route.query?.folderId === Number($route.query.folderId)))
           }"
           v-for="(folder, index) in allFolders"
           :key="index + 2"

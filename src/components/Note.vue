@@ -4,7 +4,7 @@
             <div class="border-b border-gray-200 pb-3 mb-4">
                 <div class="flex justify-between">
                   <input type="text" @keyup.enter="isEditTitle = false" v-model="note.title" ref="noteTitle" @blur="isEditTitle = false" class="rounded-md w-full border-gray-200 focus:border-gray-200 focus:ring-gray-300 transition py-2 px-4" v-if="isEditTitle">
-                  <h1 class="text-2xl text-gray-500" @click="isEditTitle = true" v-else>{{ note.title  }} <em class="text-xs" v-show="updating">Saving</em></h1>
+                  <h1 class="text-xl text-gray-500" @click="isEditTitle = true" v-else>{{ note.title  }} <em class="text-xs" v-show="updating">Saving</em></h1>
                   <Menu as="div" class="relative inline-block text-left">
                     <div>
                       <MenuButton class="inline-flex justify-center text-stone-600 hover:text-stone-800 transition">
@@ -176,11 +176,12 @@ export default {
         })
       },
       detachTag(tagId) {
-        const { note: noteId } = this.$route.params
+        const { noteId } = this.$route.params
+
         this.$store.dispatch('tag/detach', {
           tagId,
           noteId
-        }).then((tagId) => {
+        }).then(() => {
           this.$store.commit('note/DETACH_TAG', tagId)
           this.$store.commit('note/REMOVE_TAG_FROM_LIST', {
             tagId,

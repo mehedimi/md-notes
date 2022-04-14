@@ -1,5 +1,5 @@
 <template>
-  <div class="min-w-[16rem] w-72 bg-gray-100 h-full p-3 flex flex-col">
+  <div class="bg-gray-100 h-full p-3 flex flex-col">
     <Search />
     <Folder class="h-full"/>
     <div class="h-[136px]">

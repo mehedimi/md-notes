@@ -117,7 +117,6 @@ export default {
         },
         ADD_TAG_TO_LIST(state, { noteId, tag }) {
             const noteIndex = state.notes.data.findIndex(note => note.id === Number(noteId))
-            console.log(noteIndex)
             if (noteIndex === -1) return
 
             state.notes.data[noteIndex].tags.push(tag)

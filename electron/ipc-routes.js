@@ -83,20 +83,7 @@ ipcMain.handle('delete:notes/:note', (event, noteId) => {
     }
 })
 
-ipcMain.handle('post:notes/:note/tags', (event, noteId, body) => {
-    const { tag_id } = body
-
-    const { changes } = create(tables.NOTE_TAG, {
-        note_id: noteId,
-        tag_id
-    }, true)
-
-    return {
-        success: (! changes)
-    }
-})
-
-ipcMain.handle('delete:notes/:note/tags/:tag', (noteId, tagId) => {
+ipcMain.handle('delete:notes/:note/tags/:tag', (event, noteId, tagId) => {
     deleteR(tables.NOTE_TAG, {
         where: [
             ['tag_id', tagId],
@@ -188,5 +175,16 @@ ipcMain.handle('post:tags', async (event, body) => {
     return {
         id: tagResponse.lastInsertRowid,
         name: body.name
+    }
+})
+
+ipcMain.handle('post:notes/:note/tags/:tag', (event, note_id, tag_id) => {
+    const noteTag = create(tables.NOTE_TAG, {
+        note_id,
+        tag_id
+    }, true)
+
+    return {
+        success: Boolean(noteTag.changes),
     }
 })

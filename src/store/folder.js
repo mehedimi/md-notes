@@ -12,7 +12,7 @@ export default {
             return [
                 {
                     route: {
-                        name: 'folder.index'
+                        name: 'notes.index'
                     },
                     name: 'All Notes',
                     icon: 'border-all'
@@ -24,9 +24,9 @@ export default {
                         id: folder.id,
                         icon: folder.icon,
                         route: {
-                            name: 'folder.notes.index',
-                            params: {
-                                folder: folder.id
+                            name: 'notes.index',
+                            query: {
+                                folderId: folder.id
                             }
                         }
                     }

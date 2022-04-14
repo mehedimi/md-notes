@@ -1,5 +1,5 @@
 <template>
-    <div class="min-w-[20rem] w-80 px-4 flex flex-col border-r border-gray-200">
+    <div class="px-4 flex flex-col border-r border-gray-200">
         <div class="pt-4">
             <h2 class="text-3xl mb-5">My Notes</h2>
             <button @click="$refs.createNote.open" class="px-4 py-3 w-full bg-stone-100 rounded-lg flex items-center text-sm hover:bg-stone-200 transition">
@@ -9,7 +9,7 @@
         </div>
         <ul class="mt-5 overflow-y-auto h-full notes">
           <li>
-            <router-link active-class="is-active" :to="{name: routeName, params: routeParams(note.id)}" class="mb-3 bg-stone-50 p-3 rounded note inline-block w-full transition" v-for="(note, index) in notes.data" :key="index">
+            <router-link active-class="is-active" :to="{ name: 'notes.show', params: {noteId: note.id}, query: $route.query }" class="mb-3 bg-stone-50 p-3 rounded note inline-block w-full transition" v-for="(note, index) in notes.data" :key="index">
                 <span class="text-stone-400 font-light text-xs">{{ moment(note.created_at).calendar() }}</span>
                 <h2 class="text-gray-400 mb-1">{{ note.title }}</h2>
                 <p class="text-gray-400 font-light text-sm" v-if="note.content">{{ note.content.substr(0, 75) }}</p>

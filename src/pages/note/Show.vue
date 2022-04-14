@@ -1,15 +1,12 @@
 <template>
-  <Notes/>
   <Note v-if="isLoaded" />
 </template>
 
 <script>
 import Note from "../../components/Note.vue";
-import Notes from "../../components/Notes.vue";
 
 export default {
   components: {
-    Notes,
     Note
   },
   data() {
@@ -19,9 +16,8 @@ export default {
   },
   methods: {
     find() {
-      const { note } = this.$route.params;
-
-      this.$store.dispatch('note/show', note).then(() => {
+      const { noteId } = this.$route.params;
+      this.$store.dispatch('note/show', noteId).then(() => {
         this.isLoaded = true
       })
     }
