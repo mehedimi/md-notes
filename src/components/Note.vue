@@ -64,7 +64,7 @@
                   </Menu>
                 </div>
                 
-                <table class="mt-4 text-sm">
+                <table class="text-xs">
                     <tbody>
                         <tr>
                             <td class="w-36 text-stone-400 font-light py-2">Last Updated</td>

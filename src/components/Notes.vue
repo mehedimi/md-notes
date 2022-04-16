@@ -93,19 +93,19 @@ export default {
 
 <style lang="postcss">
     .notes .note.is-active {
-        @apply bg-stone-200
+        @apply bg-stone-200 shadow
     }
-    .notes .note.is-active span{
+    .notes .note.is-active span {
         @apply text-gray-600
     }
-    .notes .note.is-active h2{
+    .notes .note.is-active h2 {
         @apply text-gray-700
     }
-    .notes .note.is-active p{
+    .notes .note.is-active p {
         @apply text-gray-600
     }
 
-    .notes .note.is-active .tags li{
+    .notes .note.is-active .tags li {
         @apply text-gray-500 bg-stone-100
     }
 </style>

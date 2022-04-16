@@ -3,15 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "main": "main.js",
+  "author": "Mehedi Hasan",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "electron": "wait-on tcp:3000 && cross-env IS_DEV=true nodemon --exec electron .",
     "electron:pack": "electron-builder --dir",
     "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron\"",
     "electron:builder": "electron-builder",
-    "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
+    "build:for:electron": "cross-env ELECTRON=true vite build",
     "app:build": "npm run build:for:electron && npm run electron:builder",
     "sqlite-rebuild": "electron-rebuild -f -w better-sqlite3"
   },
@@ -34,6 +35,7 @@
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
     "electron": "^17.0.0",
+    "electron-builder": "^23.0.3",
     "electron-rebuild": "^3.2.7",
     "izitoast": "^1.4.0",
     "marked": "^4.0.12",
@@ -55,9 +57,9 @@
     ]
   },
   "build": {
-    "appId": "com.my-website.my-app",
-    "productName": "MyApp",
-    "copyright": "Copyright © 2019 ${author}",
+    "appId": "im.mehedi.md-note",
+    "productName": "MD Note",
+    "copyright": "Copyright © 2021 ${author}",
     "mac": {
       "category": "public.app-category.utilities"
     },
