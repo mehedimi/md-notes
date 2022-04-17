@@ -9,15 +9,13 @@ import FormModal from "./Modal/FormModal.vue";
 
 export default {
   components: {
-    FormModal
+    FormModal,
   },
   methods: {
     open() {
-      this.$refs.modal.open()
+      this.$refs.modal.open();
     },
-    submit() {
-
-    }
-  }
-}
+    submit() {},
+  },
+};
 </script>

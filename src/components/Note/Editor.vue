@@ -1,66 +1,127 @@
 <template>
-    <ul>
-      <li>
-        <button @click="preview = !preview">Preview {{ preview ? 'Off' : 'On' }}</button>
-      </li>
-    </ul>
-    <div class="flex overflow-y-auto">
-      <div class="note-edit h-screen" :class="preview ? 'w-6/12' : 'w-full'" ref="textarea"></div>
-      <keep-alive>
-        <Preview v-if="preview"/>
-      </keep-alive>
-    </div>
+  <div></div>
 </template>
 
 <script>
-import {mapActions, mapMutations, mapState} from 'vuex'
+import { mapActions, mapMutations, mapState } from "vuex";
+import {
+  EditorView,
+  drawSelection,
+  highlightActiveLine,
+  keymap,
+} from "@codemirror/view";
+import { indentWithTab, defaultKeymap } from "@codemirror/commands";
+import { defaultHighlightStyle } from "@codemirror/highlight";
+import { LanguageSupport, LanguageDescription } from "@codemirror/language";
 
-import debounce from 'lodash/debounce'
-import Preview from "./Preview.vue"
-import CodeMirror from 'codemirror/lib/codemirror'
-import 'codemirror/mode/markdown/markdown'
-import 'codemirror/addon/edit/continuelist'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/dracula.css'
-import 'codemirror/theme/mdn-like.css'
+import { EditorState } from "@codemirror/state";
+import { markdown } from "@codemirror/lang-markdown";
+import debounce from "lodash/debounce";
+
+let view;
 
 export default {
-    components: {
-        Preview
+  components: {},
+  computed: mapState("note", ["note", "loaded"]),
+  methods: {
+    ...mapMutations("note", ["SET_CONTENT"]),
+    ...mapActions("note", ["updateContent"]),
+    updateContentState() {
+      view.dispatch({
+        changes: {
+          from: 0,
+          to: view.state.doc.length,
+          insert: this.note.content || "",
+        },
+      });
     },
-    computed: mapState('note', ['note']),
-    data() {
-      return {
-        preview: false
-      }
-    },
-    methods: {
-      ...mapMutations('note', ['SET_CONTENT']),
-      ...mapActions('note', ['updateContent'])
-    },
-    mounted() {
-      const editor = CodeMirror(this.$refs.textarea, {
-        mode: 'markdown',
-        theme: 'mdn-like',
-        value: this.note.content || '',
-        lineNumbers: true,
-        lineWrapping: true,
-        extraKeys: {
-          Enter: 'newlineAndIndentContinueMarkdownList'
-        }
-      })
+  },
+  mounted() {
+    const state = EditorState.create({
+      doc: "",
+      extensions: [
+        keymap.of([indentWithTab]),
+        drawSelection(),
+        defaultHighlightStyle.fallback,
+        highlightActiveLine(),
+        markdown({
+          codeLanguages: [
+            LanguageDescription.of({
+              name: "javascript",
+              alias: ["js", "jsx"],
+              async load() {
+                const { javascriptLanguage } = await import(
+                  "@codemirror/lang-javascript"
+                );
+                return new LanguageSupport(javascriptLanguage);
+              },
+            }),
+            LanguageDescription.of({
+              name: "css",
+              async load() {
+                const { cssLanguage } = await import("@codemirror/lang-css");
+                return new LanguageSupport(cssLanguage);
+              },
+            }),
+            LanguageDescription.of({
+              name: "html",
+              alias: ["htm"],
+              async load() {
+                const { htmlLanguage } = await import("@codemirror/lang-html");
+                return new LanguageSupport(htmlLanguage);
+              },
+            }),
+            LanguageDescription.of({
+              name: "json",
+              async load() {
+                const { jsonLanguage } = await import("@codemirror/lang-json");
+                return new LanguageSupport(jsonLanguage);
+              },
+            }),
+            LanguageDescription.of({
+              name: "php",
+              async load() {
+                const { phpLanguage } = await import("@codemirror/lang-php");
+                return new LanguageSupport(phpLanguage);
+              },
+            }),
+          ],
+        }),
+        keymap.of([...defaultKeymap]),
+        EditorView.lineWrapping,
+        EditorView.theme({
+          $: {
+            fontSize: "46pt",
+          },
+        }),
+      ],
+    });
 
-      editor.on('change', debounce((instance) => {
-        this.SET_CONTENT(instance.getDoc().getValue())
-        this.updateContent()
-      }, 500))
-    }
-}
+    view = new EditorView({
+      state,
+      parent: this.$el,
+      lineWrapping: true,
+    });
+  },
+  watch: {
+    loaded: {
+      immediate: true,
+      handler(status) {
+        if (status) {
+          this.updateContentState();
+        }
+      },
+    },
+  },
+};
 </script>
 
 <style lang="postcss">
-.note-edit > div{
-    height: 100%;
-    border-radius: 3px;
+.note-edit > div {
+  height: 100%;
+  border-radius: 3px;
+}
+.cm-editor.cm-focused {
+  outline: none !important;
 }
 </style>
