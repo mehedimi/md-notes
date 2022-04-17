@@ -1,15 +1,24 @@
 <template>
-  <div class="overflow-y-auto bg-sidebar">
+  <div
+    class="flex flex-col flex-col-reverse justify-between bg-sidebar"
+    :class="visibleSidebar ? '' : 'hidden'"
+  >
     <div class="p-4">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold">MD Notes</h2>
-        <button class="text-xl text-emerald-500">
+        <Tooltip
+          as="a"
+          @click.prevent="SHOW_SIDEBAR(false)"
+          href="#"
+          class="text-xl text-emerald-500"
+        >
           <i class="las la-columns"></i>
-        </button>
+          <template v-slot:content>Hide Sidebar</template>
+        </Tooltip>
       </div>
     </div>
 
-    <div class="border-t pt-2 text-sm">
+    <div class="pt-2 text-sm">
       <div class="mb-1 flex items-center justify-between px-4">
         <a href="#"
           ><i class="las la-angle-down mr-3 text-dark"></i>All Folders</a
@@ -48,7 +57,7 @@
         </DisclosureButton>
         <DisclosurePanel class="mb-1">
           <router-link
-            class="note-list block border-l-4 border-l-transparent pl-8 text-gray-400 hover:border-l-emerald-400 hover:text-emerald-400"
+            class="note-list block truncate border-l-4 border-l-transparent pl-8 text-gray-400 hover:border-l-emerald-400 hover:text-emerald-400"
             :to="{
               name: 'notes.show',
               params: { noteId: note.id },
@@ -67,7 +76,7 @@
 
 <script>
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations, mapState } from "vuex";
 import Tooltip from "./Tooltip.vue";
 
 export default {
@@ -77,9 +86,12 @@ export default {
     Disclosure,
     Tooltip,
   },
-  computed: mapGetters("folder", ["folderWithNotes"]),
+  computed: {
+    ...mapGetters("folder", ["folderWithNotes"]),
+    ...mapState("option", ["visibleSidebar"]),
+  },
   methods: {
-    openFolder(folder) {},
+    ...mapMutations("option", ["SHOW_SIDEBAR"]),
   },
 };
 </script>

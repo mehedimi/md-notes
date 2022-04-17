@@ -134,5 +134,11 @@ export default {
     SET_LOADING(state, status) {
       state.loaded = status;
     },
+    UPDATE_TITLE_ON_LIST(state) {
+      const note = state.notes.data.find((n) => n.id === state.note.id);
+      if (!note) return;
+
+      note.title = state.note.title;
+    },
   },
 };
