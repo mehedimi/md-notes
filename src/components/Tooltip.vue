@@ -4,7 +4,7 @@
     <div
       :id="`tooltip-${id}`"
       role="tooltip"
-      class="tooltip invisible absolute z-10 inline-block rounded-lg bg-dark py-2 px-3 text-xs font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
+      class="tooltip invisible absolute z-20 inline-block rounded-lg bg-dark py-2 px-3 text-xs font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
     >
       <slot name="content"></slot>
       <div class="tooltip-arrow" data-popper-arrow></div>

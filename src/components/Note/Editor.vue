@@ -12,10 +12,12 @@ import {
 } from "@codemirror/view";
 import { defaultHighlightStyle } from "@codemirror/highlight";
 import { indentWithTab, defaultKeymap } from "@codemirror/commands";
+import { closeBrackets } from "@codemirror/closebrackets";
+import { autocompletion } from "@codemirror/autocomplete";
 
 import { EditorState } from "@codemirror/state";
-import { markdown } from "@codemirror/lang-markdown";
-import codeLanguages from "../../utils/code-languages";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import { languages } from "@codemirror/language-data";
 import debounce from "lodash/debounce";
 
 let view;
@@ -51,7 +53,8 @@ export default {
         defaultHighlightStyle.fallback,
         highlightActiveLine(),
         markdown({
-          codeLanguages,
+          codeLanguages: languages,
+          base: markdownLanguage,
         }),
         keymap.of([...defaultKeymap]),
         EditorView.lineWrapping,
@@ -60,6 +63,8 @@ export default {
             this.updateDocContent();
           }
         }),
+        closeBrackets(),
+        autocompletion(),
       ],
     });
 
@@ -88,5 +93,11 @@ export default {
 }
 .cm-editor.cm-focused {
   outline: none !important;
+}
+.cm-editor .cm-line .ͼ6 {
+  @apply text-lg;
+}
+.cm-editor .cm-line {
+  @apply text-sm;
 }
 </style>

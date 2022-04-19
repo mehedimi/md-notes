@@ -1,20 +1,8 @@
 <template>
-  <div
-    class="flex flex-col flex-col-reverse justify-between bg-sidebar"
-    :class="visibleSidebar ? '' : 'hidden'"
-  >
+  <div class="flex flex-col flex-col-reverse justify-between bg-sidebar shadow">
     <div class="p-4">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold">MD Notes</h2>
-        <Tooltip
-          as="a"
-          @click.prevent="SHOW_SIDEBAR(false)"
-          href="#"
-          class="text-xl text-emerald-500"
-        >
-          <i class="las la-columns"></i>
-          <template v-slot:content>Hide Sidebar</template>
-        </Tooltip>
       </div>
     </div>
 
@@ -23,7 +11,7 @@
         <a href="#"
           ><i class="las la-angle-down mr-3 text-dark"></i>All Folders</a
         >
-        <Tooltip>
+        <Tooltip @click="$refs.resourceCreate.openModal()">
           <i class="las la-plus"></i>
           <template v-slot:content>Add Folder</template>
         </Tooltip>
@@ -50,7 +38,12 @@
           <span class="ml-1 group-hover:text-emerald-400">{{
             folder.name
           }}</span>
-          <Tooltip @click.stop class="ml-auto hidden group-hover:inline-block">
+          <Tooltip
+            @click.stop="
+              $refs.resourceCreate.openModal(1, { folder_id: folder.id })
+            "
+            class="ml-auto hidden group-hover:inline-block"
+          >
             <i class="las la-plus"></i>
             <template v-slot:content>Add Note</template>
           </Tooltip>
@@ -70,6 +63,7 @@
           </router-link>
         </DisclosurePanel>
       </Disclosure>
+      <Create ref="resourceCreate" />
     </div>
   </div>
 </template>
@@ -78,6 +72,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import { mapGetters, mapMutations, mapState } from "vuex";
 import Tooltip from "./Tooltip.vue";
+import Create from "../components/Create.vue";
 
 export default {
   components: {
@@ -85,10 +80,10 @@ export default {
     DisclosureButton,
     Disclosure,
     Tooltip,
+    Create,
   },
   computed: {
     ...mapGetters("folder", ["folderWithNotes"]),
-    ...mapState("option", ["visibleSidebar"]),
   },
   methods: {
     ...mapMutations("option", ["SHOW_SIDEBAR"]),

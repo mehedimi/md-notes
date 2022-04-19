@@ -88,7 +88,7 @@ export default {
       state.notes.data.unshift(note);
     },
     DELETE_NOTE(state, noteId) {
-      const index = state.notes.data.findIndex((n) => n.id == noteId);
+      const index = state.notes.data.findIndex((n) => n.id === Number(noteId));
       if (index > -1) {
         state.notes.data.splice(index, 1);
       }

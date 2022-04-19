@@ -4,6 +4,7 @@ module.exports = {
     extend: {
       fontFamily: {
         encode: "'Encode Sans', sans-serif",
+        "fira-code": "'Fira Code', monospace",
       },
       colors: {
         sidebar: "#F5F5F5",

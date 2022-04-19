@@ -1,8 +1,8 @@
 <template>
-  <div class="mx-auto h-fit w-11/12 overflow-y-auto">
+  <div class="h-fit overflow-y-auto px-6">
     <input
       type="text"
-      class="border- w-full border-0 border-b-transparent text-2xl focus:ring-0"
+      class="w-full border-0 border-b-transparent px-0 text-2xl focus:ring-0"
       placeholder="Enter your note title here"
       v-model="note.title"
       @blur="updateTitle"
@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import Editor from "../../components/Note/Editor.vue";
 import { mapActions, mapState } from "vuex";
 import updateTitle from "../../mixins/update-title";
+import Editor from "../../components/Note/Editor.vue";
 
 export default {
   mixins: [updateTitle],

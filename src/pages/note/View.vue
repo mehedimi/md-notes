@@ -1,5 +1,5 @@
 <template>
-  <div class="note-area mx-auto h-fit w-11/12 overflow-y-auto pb-6 md:w-9/12">
+  <div class="note-area h-fit overflow-y-auto px-6 pb-6">
     <h2 class="mb-6 text-4xl font-bold">{{ note.title }}</h2>
     <Preview />
   </div>
