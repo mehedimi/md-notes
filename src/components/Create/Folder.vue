@@ -5,7 +5,7 @@
         type="text"
         id="name"
         placeholder="Name"
-        class="w-full border-0 border-b border-b-sidebar pl-0 placeholder-gray-400 placeholder:text-sm focus:border-b-gray-300 focus:ring-0"
+        class="w-full border-0 border-b border-b-sidebar pl-0 text-gray-500 placeholder-gray-400 placeholder:text-sm focus:border-b-gray-300 focus:ring-0"
         v-model="data.name"
       />
       <p

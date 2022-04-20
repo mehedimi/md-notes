@@ -3,14 +3,14 @@
     <div class="w-6/12">
       <input
         type="text"
-        class="mb-3 w-full border-0 text-2xl focus:ring-0"
+        class="mb-3 w-full border-0 bg-dark text-2xl text-heading focus:ring-0"
         v-model="note.title"
         @blur="updateTitle"
       />
       <Editor />
     </div>
     <div class="w-6/12">
-      <h2 class="mb-6 text-4xl font-bold">{{ note.title }}</h2>
+      <h2 class="mb-6 text-4xl font-bold text-heading">{{ note.title }}</h2>
       <Preview />
     </div>
   </div>

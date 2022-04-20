@@ -1,6 +1,6 @@
 <template>
   <article
-    class="prose prose-emerald font-encode prose-img:rounded"
+    class="prose font-encode prose-headings:text-heading prose-p:text-light prose-a:text-heading prose-strong:text-light prose-li:text-light prose-li:marker:text-light prose-img:rounded"
     v-html="renderedContent"
   ></article>
 </template>
@@ -13,19 +13,18 @@ import bash from "highlight.js/lib/languages/bash";
 
 hljs.registerLanguage("bash", bash);
 
-import "highlight.js/scss/github.scss";
+import "highlight.js/scss/atom-one-dark.scss";
 
 marked.use({
   renderer: {
-    code(code, infostring, escaped) {
-      if (infostring) {
-        return `<div class="highlighted-code">${
-          hljs.highlight(code, {
-            language: infostring.match(/shell|bash/) ? "bash" : infostring,
-          }).value
-        }</div>`;
-      }
-      return hljs.highlightAuto(code).value;
+    code(code, infostring) {
+      return `<div class="highlighted-code">${
+        infostring
+          ? hljs.highlight(code, {
+              language: infostring.match(/shell|bash/) ? "bash" : infostring,
+            }).value
+          : hljs.highlightAuto(code).value
+      }</div>`;
     },
   },
 });
@@ -48,6 +47,6 @@ export default {
 
 <style lang="postcss">
 .highlighted-code {
-  @apply mb-3 rounded border p-3 font-fira-code text-sm leading-6;
+  @apply mb-3 rounded bg-sidebar p-3 font-fira-code text-sm leading-6 text-[#abb2bf];
 }
 </style>

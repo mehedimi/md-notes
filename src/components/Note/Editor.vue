@@ -14,16 +14,18 @@ import { defaultHighlightStyle } from "@codemirror/highlight";
 import { indentWithTab, defaultKeymap } from "@codemirror/commands";
 import { closeBrackets } from "@codemirror/closebrackets";
 import { autocompletion } from "@codemirror/autocomplete";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { lineNumbers, highlightActiveLineGutter } from "@codemirror/gutter";
 
+import debounce from "lodash/debounce";
 import { EditorState } from "@codemirror/state";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
-import debounce from "lodash/debounce";
+import headingStyle from "../../helpers/heading-style";
 
 let view;
 
 export default {
-  components: {},
   computed: mapState("note", ["note", "loaded"]),
   methods: {
     ...mapMutations("note", ["SET_CONTENT"]),
@@ -55,6 +57,7 @@ export default {
         markdown({
           codeLanguages: languages,
           base: markdownLanguage,
+          addKeymap: true,
         }),
         keymap.of([...defaultKeymap]),
         EditorView.lineWrapping,
@@ -65,6 +68,10 @@ export default {
         }),
         closeBrackets(),
         autocompletion(),
+        oneDark,
+        headingStyle,
+        lineNumbers(),
+        highlightActiveLineGutter(),
       ],
     });
 
@@ -93,11 +100,5 @@ export default {
 }
 .cm-editor.cm-focused {
   outline: none !important;
-}
-.cm-editor .cm-line .ͼ6 {
-  @apply text-lg;
-}
-.cm-editor .cm-line {
-  @apply text-sm;
 }
 </style>

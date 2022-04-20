@@ -4,18 +4,19 @@
       <label for="folder" class="text-sm text-gray-400">Folder</label>
       <select
         id="folder"
-        class="w-full border-0 border-b border-b-sidebar pl-0 placeholder-gray-400 placeholder:text-sm focus:border-b-gray-300 focus:ring-0"
+        class="w-full border-0 border-b border-b-sidebar pl-0 text-gray-500 placeholder-gray-400 placeholder:text-sm focus:border-b-gray-300 focus:ring-0"
         v-model="data.folder_id"
       >
+        <option value="" selected>Select any folder</option>
         <option :value="folder.id" v-for="folder in folders.data">
           {{ folder.name }}
         </option>
       </select>
       <p
         class="mt-0.5 text-xs text-red-500"
-        v-if="errors.hasOwnProperty('name')"
+        v-if="errors.hasOwnProperty('folder_id')"
       >
-        {{ errors.name.message }}
+        {{ errors.folder_id.message }}
       </p>
     </div>
     <div>
@@ -23,7 +24,7 @@
         type="text"
         id="name"
         placeholder="Title"
-        class="w-full border-0 border-b border-b-sidebar pl-0 placeholder-gray-400 placeholder:text-sm focus:border-b-gray-300 focus:ring-0"
+        class="w-full border-0 border-b border-b-sidebar pl-0 text-gray-500 placeholder-gray-400 placeholder:text-sm focus:border-b-gray-300 focus:ring-0"
         v-model="data.title"
       />
       <p

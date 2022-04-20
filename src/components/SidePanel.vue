@@ -7,10 +7,8 @@
     </div>
 
     <div class="pt-2 text-sm">
-      <div class="mb-1 flex items-center justify-between px-4">
-        <a href="#"
-          ><i class="las la-angle-down mr-3 text-dark"></i>All Folders</a
-        >
+      <div class="mb-1 flex items-center justify-between px-4 text-[#F9FFFF]">
+        <a href="#"><i class="las la-angle-down mr-3"></i>All Folders</a>
         <Tooltip @click="$refs.resourceCreate.openModal()">
           <i class="las la-plus"></i>
           <template v-slot:content>Add Folder</template>
@@ -18,26 +16,41 @@
       </div>
       <Disclosure as="div" v-slot="{ open }" v-for="folder in folderWithNotes">
         <DisclosureButton
-          class="group flex w-full items-center border-l-4 border-l-transparent px-4 py-1 text-gray-400 hover:border-l-emerald-400"
+          class="group flex w-full items-center px-4 py-1 text-[#C7CDD8] hover:bg-[#303947]"
         >
           <i
-            class="las la-angle-right transition group-hover:text-emerald-400"
+            class="las la-angle-right transition"
             :class="open ? 'rotate-90 transform' : ''"
           ></i>
           <svg
+            v-if="open"
             xmlns="http://www.w3.org/2000/svg"
-            class="ml-1 h-5 w-5 text-gray-300 group-hover:text-emerald-400"
+            class="ml-1 h-5 w-5"
             viewBox="0 0 20 20"
             fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z"
+              clip-rule="evenodd"
+            />
+            <path
+              d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z"
+            />
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="ml-1 h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            v-else
           >
             <path
               d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
             />
           </svg>
 
-          <span class="ml-1 group-hover:text-emerald-400">{{
-            folder.name
-          }}</span>
+          <span class="ml-1">{{ folder.name }}</span>
           <Tooltip
             @click.stop="
               $refs.resourceCreate.openModal(1, { folder_id: folder.id })
@@ -50,7 +63,7 @@
         </DisclosureButton>
         <DisclosurePanel class="mb-1">
           <router-link
-            class="note-list block truncate border-l-4 border-l-transparent pl-8 text-gray-400 hover:border-l-emerald-400 hover:text-emerald-400"
+            class="note-list block truncate pl-8 text-[#C7CDD8] hover:bg-[#303947]"
             :to="{
               name: 'notes.show',
               params: { noteId: note.id },
@@ -93,6 +106,6 @@ export default {
 
 <style lang="postcss">
 .note-list.router-link-active {
-  @apply border-l-emerald-400 text-emerald-400;
+  @apply bg-[#303947];
 }
 </style>

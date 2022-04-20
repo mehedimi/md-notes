@@ -1,9 +1,9 @@
 <template>
   <div class="flex w-full flex-col">
-    <div class="mx-3 flex items-center justify-between py-2">
+    <div class="m-3 flex items-center justify-between">
       <Tooltip as="a" href="#" @click.prevent="SHOW_SIDEBAR(!visibleSidebar)">
         <i
-          class="las la-angle-left text-xl text-gray-400 transition hover:text-emerald-500"
+          class="las la-angle-left text-xl text-gray-400 transition hover:text-sidebar"
           :class="visibleSidebar ? '' : 'rotate-180 transform'"
         ></i>
         <template v-slot:content
@@ -11,11 +11,13 @@
         </template>
       </Tooltip>
 
-      <div class="note-actions flex items-center gap-x-3">
+      <div
+        class="note-actions flex items-center gap-x-1 rounded-full bg-sidebar px-1 py-0.5"
+      >
         <Tooltip as="div" v-for="page in pages">
           <router-link
             :to="{ name: `notes.${page.name}`, query: { page: page.name } }"
-            class="rounded border border-sidebar py-1 px-2 text-xl text-gray-400 hover:border-emerald-400 hover:text-emerald-400"
+            class="rounded rounded-full px-1.5 text-xl text-gray-400"
           >
             <i class="las" :class="page.icon"></i>
           </router-link>
@@ -103,7 +105,7 @@ export default {
     Popover,
   },
   computed: {
-    ...mapState("note", ["loaded"]),
+    ...mapState("note", ["loaded", "note"]),
     ...mapState("option", ["visibleSidebar"]),
   },
   data() {
@@ -181,6 +183,6 @@ export default {
 
 <style lang="postcss">
 .note-actions .router-link-active {
-  @apply border-emerald-400 bg-emerald-400 text-white;
+  @apply bg-dark text-light;
 }
 </style>
