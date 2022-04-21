@@ -7,7 +7,7 @@ module.exports = {
         "fira-code": "'Fira Code', monospace",
       },
       colors: {
-        sidebar: "#141A28",
+        sidebar: "#2c313a",
         dark: "#282c34",
         light: "#abb2bf",
         heading: "#e6c07b",

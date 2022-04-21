@@ -2,13 +2,15 @@
   <div class="flex flex-col flex-col-reverse justify-between bg-sidebar shadow">
     <div class="p-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold">MD Notes</h2>
+        <h2 class="text-xl font-bold text-light">MD Notes</h2>
       </div>
     </div>
 
     <div class="pt-2 text-sm">
       <div class="mb-1 flex items-center justify-between px-4 text-[#F9FFFF]">
-        <a href="#"><i class="las la-angle-down mr-3"></i>All Folders</a>
+        <router-link :to="{ name: 'folders.index' }"
+          ><i class="las la-angle-down mr-3"></i>All Folders</router-link
+        >
         <Tooltip @click="$refs.resourceCreate.openModal()">
           <i class="las la-plus"></i>
           <template v-slot:content>Add Folder</template>
@@ -106,6 +108,6 @@ export default {
 
 <style lang="postcss">
 .note-list.router-link-active {
-  @apply bg-[#303947];
+  @apply !bg-indigo-600;
 }
 </style>

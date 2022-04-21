@@ -18,7 +18,7 @@ import "highlight.js/scss/atom-one-dark.scss";
 marked.use({
   renderer: {
     code(code, infostring) {
-      return `<div class="highlighted-code">${
+      return `<div class="highlighted-code overflow-x-auto">${
         infostring
           ? hljs.highlight(code, {
               language: infostring.match(/shell|bash/) ? "bash" : infostring,
@@ -48,5 +48,8 @@ export default {
 <style lang="postcss">
 .highlighted-code {
   @apply mb-3 rounded bg-sidebar p-3 font-fira-code text-sm leading-6 text-[#abb2bf];
+}
+input[type="checkbox"] {
+  @apply rounded border-white;
 }
 </style>

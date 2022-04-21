@@ -2,6 +2,11 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
   {
+    path: "/folders",
+    component: () => import("./pages/folder/Index.vue"),
+    name: "folders.index",
+  },
+  {
     path: "/",
     redirect: "/notes",
   },

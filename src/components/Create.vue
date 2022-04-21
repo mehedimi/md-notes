@@ -12,7 +12,7 @@
             leave-from="opacity-100"
             leave-to="opacity-0"
           >
-            <DialogOverlay class="fixed inset-0 bg-gray-300/50" />
+            <DialogOverlay class="fixed inset-0 bg-gray-700/70" />
           </TransitionChild>
 
           <span class="inline-block h-screen align-middle" aria-hidden="true">
@@ -29,11 +29,11 @@
             leave-to="opacity-0 scale-95"
           >
             <div
-              class="inline-block w-full max-w-md transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all"
+              class="inline-block w-full max-w-md transform overflow-hidden rounded-2xl bg-sidebar text-left align-middle shadow-xl transition-all"
             >
               <TabGroup :default-index="tabActiveIndex">
                 <TabList
-                  class="mt-3 flex gap-x-8 border-b border-b-sidebar p-1 px-6"
+                  class="mx-6 mt-3 flex gap-x-2 rounded-lg bg-dark py-1 px-1 font-encode shadow-dark"
                 >
                   <Tab
                     as="template"
@@ -41,22 +41,20 @@
                     v-slot="{ selected }"
                   >
                     <button
-                      class="relative transition-colors after:absolute after:left-[45%] after:-bottom-1 after:h-[1.5px] after:w-[120%] after:-translate-x-[45%] after:transform after:content-[''] hover:text-emerald-400 focus:outline-none"
-                      :class="
-                        selected
-                          ? 'text-emerald-400 after:bg-emerald-400'
-                          : 'text-dark'
-                      "
+                      class="relative rounded-lg px-6 py-2 transition-colors transition-colors hover:text-white focus:outline-none"
+                      :class="selected ? 'bg-sidebar text-white' : 'text-light'"
                     >
                       {{ resource.title }}
                     </button>
                   </Tab>
                 </TabList>
 
-                <TabPanels class="mt-2">
+                <TabPanels
+                  class="mt-2 font-encode focus:outline-0 focus:ring-0"
+                >
                   <TabPanel
                     v-for="resource in resources"
-                    class="rounded-xl bg-white px-6 pb-6 pt-2 ring-0"
+                    class="rounded-xl px-6 pb-6 pt-2 ring-0"
                   >
                     <component
                       :close-modal="closeModal"

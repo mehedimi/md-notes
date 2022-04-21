@@ -5,7 +5,7 @@
         type="text"
         id="name"
         placeholder="Name"
-        class="w-full border-0 border-b border-b-sidebar pl-0 text-gray-500 placeholder-gray-400 placeholder:text-sm focus:border-b-gray-300 focus:ring-0"
+        class="w-full rounded border border-dark bg-sidebar text-light placeholder-light placeholder:text-sm focus:border-dark focus:ring-0"
         v-model="data.name"
       />
       <p
@@ -15,30 +15,20 @@
         {{ errors.name.message }}
       </p>
     </div>
-    <div class="mt-6 grid grid-cols-2 gap-x-4">
-      <button
-        class="w-full rounded-lg border py-3 text-center text-xs font-semibold uppercase text-gray-600 shadow-sidebar hover:bg-gray-100"
-        @click="closeModal"
-        type="button"
-      >
-        Cancel
-      </button>
-      <button
-        class="w-full rounded-lg bg-emerald-400 text-xs font-semibold uppercase text-white hover:bg-emerald-500"
-        type="submit"
-      >
-        Create
-      </button>
-    </div>
+    <ActionButton />
   </form>
 </template>
 
 <script>
 import Resource from "./Resource.vue";
+import ActionButton from "./ActionButton.vue";
 import { mapActions } from "vuex";
 
 export default {
   extends: Resource,
+  components: {
+    ActionButton,
+  },
   data() {
     return {
       errors: {},

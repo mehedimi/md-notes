@@ -1,7 +1,8 @@
+require("./electron/data/migration")();
+
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const { isMac } = require("./electron/platforms");
-const databaseMigration = require("./electron/data/migration");
 require("./electron/ipc-routes");
 
 const isDev = process.env.IS_DEV == "true" ? true : false;
@@ -22,8 +23,6 @@ function createWindow() {
   } else {
     win.loadFile(`${path.join(__dirname, "./dist/index.html")}`);
   }
-
-  databaseMigration();
 }
 
 app.whenReady().then(() => {

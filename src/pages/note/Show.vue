@@ -12,7 +12,7 @@
       </Tooltip>
 
       <div
-        class="note-actions flex items-center gap-x-1 rounded-full bg-sidebar px-1 py-0.5"
+        class="note-actions flex items-center gap-x-1 rounded-full bg-gray-700 px-1 py-0.5"
       >
         <Tooltip as="div" v-for="page in pages">
           <router-link
@@ -24,69 +24,91 @@
           <template v-slot:content>{{ page.text }}</template>
         </Tooltip>
       </div>
-
-      <div class="note-actions flex items-center gap-x-2">
-        <Tooltip
-          as="a"
-          href="#"
-          class="rounded border border-sidebar px-2 py-0.5 text-xl text-gray-400 hover:border-emerald-400 hover:bg-emerald-400 hover:text-white"
-        >
-          <i class="las la-window-restore"></i>
-          <template v-slot:content>Move</template>
-        </Tooltip>
-        <Popover class="relative">
-          <PopoverButton as="template">
-            <Tooltip
-              as="a"
-              href="#"
-              @click.prevent
-              class="rounded border border-sidebar px-2 py-0.5 text-xl text-red-500 hover:border-red-500 hover:bg-red-500 hover:text-white"
-            >
-              <i class="las la-trash"></i>
-              <template v-slot:content>Delete</template>
-            </Tooltip>
-          </PopoverButton>
-
-          <transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="translate-y-1 opacity-0"
-            enter-to-class="translate-y-0 opacity-100"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="translate-y-0 opacity-100"
-            leave-to-class="translate-y-1 opacity-0"
+      <Menu as="div" class="relative inline-block text-left" v-slot="{ open }">
+        <div>
+          <MenuButton
+            :class="open ? 'bg-gray-700' : ''"
+            class="inline-flex justify-center rounded-full px-1.5 py-0.5 text-2xl text-white transition-colors hover:bg-gray-700"
           >
-            <PopoverPanel
-              class="absolute top-10 right-0 z-10 w-80 rounded border border-sidebar bg-white shadow-lg shadow-sidebar"
-              v-slot="{ close }"
-            >
-              <h2 class="border-b border-b-sidebar py-2 px-4 text-sm font-bold">
-                Warning!
-              </h2>
-              <div class="p-4">
-                <p class="mb-2 text-sm">
-                  Are you sure you want to delete this note?
-                </p>
-                <div class="mt-4 text-right">
-                  <button
-                    class="mr-3 rounded border px-3 py-1 text-xs shadow shadow-sidebar hover:bg-gray-50"
-                    @click="close"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    class="rounded border border-red-500 bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600"
-                    @click="handleDelete(close)"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </PopoverPanel>
-          </transition>
-        </Popover>
-      </div>
+            <i class="las la-ellipsis-h"></i>
+          </MenuButton>
+        </div>
+
+        <transition
+          enter-active-class="transition duration-100 ease-out"
+          enter-from-class="transform scale-95 opacity-0"
+          enter-to-class="transform scale-100 opacity-100"
+          leave-active-class="transition duration-75 ease-in"
+          leave-from-class="transform scale-100 opacity-100"
+          leave-to-class="transform scale-95 opacity-0"
+        >
+          <MenuItems
+            class="absolute right-0 z-20 mt-2 w-52 origin-top-right divide-y divide-[rgb(80,80,80)] rounded-md border border-[rgb(80,80,80)] bg-dark shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          >
+            <div class="py-2">
+              <MenuItem v-slot="{ active }">
+                <button
+                  :class="[
+                    active ? 'bg-[#303947]' : '',
+                    'flex w-full items-center px-2 py-1 text-sm text-gray-50',
+                  ]"
+                >
+                  <i class="las la-folder-open mr-2"></i>
+                  Copy to
+                </button>
+              </MenuItem>
+              <MenuItem v-slot="{ active }">
+                <button
+                  :class="[
+                    active ? 'bg-[#303947]' : '',
+                    'flex w-full items-center px-2 py-1 text-sm text-gray-50',
+                  ]"
+                >
+                  <i class="las la-folder mr-2"></i>
+                  Move to
+                </button>
+              </MenuItem>
+              <MenuItem v-slot="{ active }">
+                <button
+                  :class="[
+                    active ? 'bg-[#303947]' : '',
+                    'flex w-full items-center px-2 py-1 text-sm text-gray-50',
+                  ]"
+                >
+                  <i class="lab la-js mr-2"></i>
+                  Export as JSON
+                </button>
+              </MenuItem>
+              <MenuItem v-slot="{ active }">
+                <button
+                  :class="[
+                    active ? 'bg-[#303947]' : '',
+                    'flex w-full items-center px-2 py-1 text-sm text-gray-50',
+                  ]"
+                >
+                  <i class="lab la-markdown mr-2"></i>
+                  Export as Markdown
+                </button>
+              </MenuItem>
+            </div>
+            <div class="py-1">
+              <MenuItem v-slot="{ active }">
+                <button
+                  :class="[
+                    active ? 'bg-red-500 text-gray-50' : 'text-red-500',
+                    'flex w-full items-center px-2 py-1 text-sm',
+                  ]"
+                >
+                  <i class="las la-trash mr-2"></i>
+                  Delete
+                </button>
+              </MenuItem>
+            </div>
+          </MenuItems>
+        </transition>
+      </Menu>
     </div>
-    <router-view></router-view>
+    <router-view class="mb-2"></router-view>
   </div>
 </template>
 
@@ -94,7 +116,15 @@
 import Note from "../../components/Note.vue";
 import Tooltip from "../../components/Tooltip.vue";
 import { mapMutations, mapState, mapActions } from "vuex";
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+  Menu,
+  MenuItems,
+  MenuItem,
+  MenuButton,
+} from "@headlessui/vue";
 
 export default {
   components: {
@@ -103,6 +133,10 @@ export default {
     PopoverPanel,
     PopoverButton,
     Popover,
+    Menu,
+    MenuItems,
+    MenuItem,
+    MenuButton,
   },
   computed: {
     ...mapState("note", ["loaded", "note"]),

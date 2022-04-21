@@ -1,11 +1,5 @@
 <template>
-  <div class="flex h-screen">
-    <keep-alive>
-      <SidePanel class="w-[250px] min-w-[250px]" v-if="visibleSidebar" />
-    </keep-alive>
-    <div v-if="$route.name === 'notes.index'"></div>
-    <router-view v-else></router-view>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>
@@ -23,16 +17,10 @@ export default {
   setup() {
     const store = useStore();
     const route = useRoute();
-
-    onMounted(() => {
-      store.dispatch("note/get");
-      store.dispatch("folder/get");
-    });
-
     watch(
-      () => route.query,
+      () => route,
       (next) => {
-        store.dispatch("note/get", next);
+        store.dispatch("note/get", next.query);
       }
     );
 
