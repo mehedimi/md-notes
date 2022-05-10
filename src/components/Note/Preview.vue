@@ -1,6 +1,6 @@
 <template>
   <article
-    class="prose font-encode prose-headings:text-heading prose-p:text-light prose-a:text-heading prose-strong:text-light prose-li:text-light prose-li:marker:text-light prose-img:rounded"
+    class="prose min-w-full overflow-x-auto font-encode prose-headings:text-heading prose-p:text-light prose-a:text-heading prose-strong:text-light prose-code:rounded prose-code:bg-yellow-200 prose-code:py-0.5 prose-code:px-1 prose-code:font-normal prose-code:before:content-[''] prose-code:after:content-[''] prose-li:text-light prose-li:marker:text-light prose-img:rounded"
     v-html="renderedContent"
   ></article>
 </template>
@@ -15,16 +15,32 @@ hljs.registerLanguage("bash", bash);
 
 import "highlight.js/scss/atom-one-dark.scss";
 
+const aliases = {
+  shell: "bash",
+  zsh: "bash",
+};
+
 marked.use({
   renderer: {
     code(code, infostring) {
-      return `<div class="highlighted-code overflow-x-auto">${
-        infostring
+      let lang;
+
+      if (infostring) {
+        lang = aliases[infostring] || infostring;
+      }
+
+      return `<div class="highlighted-code">${
+        lang
           ? hljs.highlight(code, {
-              language: infostring.match(/shell|bash/) ? "bash" : infostring,
+              language: hljs.getLanguage(lang) ? lang : "plaintext",
             }).value
           : hljs.highlightAuto(code).value
       }</div>`;
+    },
+    checkbox(checked) {
+      return `<input type="checkbox"${
+        checked ? 'checked=""' : ""
+      } class="checkbox cursor-pointer"> `;
     },
   },
 });
@@ -36,12 +52,26 @@ export default {
       return marked.parse(this.note.content || "");
     },
   },
+  mounted() {
+    this.$el.addEventListener(
+      "click",
+      ({ target }) => {
+        if (!target.classList.contains("checkbox")) return;
+        this.$emit("checked", {
+          text: target.parentNode.innerText.split("\n")[0].trim(),
+          checked: target.checked,
+        });
+      },
+      false
+    );
+  },
 };
 </script>
 
 <style lang="scss">
 .highlighted-code {
   white-space: pre;
+  @apply inline-block;
 }
 </style>
 

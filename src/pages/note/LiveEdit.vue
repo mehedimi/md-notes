@@ -7,18 +7,18 @@
         v-model="note.title"
         @blur="updateTitle"
       />
-      <Editor />
+      <Editor ref="editor" />
     </div>
-    <div class="w-6/12">
+    <div class="w-6/12 pr-4">
       <h2 class="mb-6 text-4xl font-bold text-heading">{{ note.title }}</h2>
-      <Preview />
+      <Preview @checked="handleCheck" />
     </div>
   </div>
 </template>
 <script>
 import Preview from "../../components/Note/Preview.vue";
 import Editor from "../../components/Note/Editor.vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import updateTitle from "../../mixins/update-title";
 
 export default {
@@ -30,6 +30,11 @@ export default {
   computed: mapState("note", ["loaded", "note"]),
   methods: {
     ...mapActions("note", ["update"]),
+    ...mapMutations("note", ["HANDLE_CHECKBOX"]),
+    handleCheck(payload) {
+      this.HANDLE_CHECKBOX(payload);
+      this.$refs.editor.updateContentState();
+    },
   },
 };
 </script>

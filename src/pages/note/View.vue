@@ -1,18 +1,21 @@
 <template>
   <div class="note-area h-fit overflow-y-auto px-6">
     <h2 class="mb-6 text-4xl font-bold text-heading">{{ note.title }}</h2>
-    <Preview />
+    <Preview @checked="HANDLE_CHECKBOX" />
   </div>
 </template>
 <script>
 import Preview from "../../components/Note/Preview.vue";
-import { mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   components: {
     Preview,
   },
   computed: mapState("note", ["note"]),
+  methods: {
+    ...mapMutations("note", ["HANDLE_CHECKBOX"]),
+  },
 };
 </script>
 

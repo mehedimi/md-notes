@@ -76,6 +76,9 @@ export default {
           commit("SET_UPDATING", false);
         });
     },
+    copy({ state }, { folderId, noteId }) {
+      noteId = noteId || state.note.id;
+    },
   },
   mutations: {
     SET_NOTES(state, notes) {
@@ -139,6 +142,12 @@ export default {
       if (!note) return;
 
       note.title = state.note.title;
+    },
+    HANDLE_CHECKBOX(state, { text, checked }) {
+      state.note.content = state.note.content.replace(
+        `${checked ? "[ ]" : "[x]"} ${text}`,
+        `${checked ? "[x]" : "[ ]"} ${text}`
+      );
     },
   },
 };
