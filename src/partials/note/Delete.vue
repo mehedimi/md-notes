@@ -44,6 +44,9 @@ export default {
     deleteNote() {
       this.$store.dispatch("note/delete", this.noteId).then(() => {
         this.$refs.delete.closeModal();
+        this.$router.push({
+          name: "notes.index",
+        });
       });
     },
   },

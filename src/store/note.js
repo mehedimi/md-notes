@@ -1,4 +1,5 @@
 import moment from "moment";
+import pick from "lodash/pick";
 
 export default {
   namespaced: true,
@@ -76,8 +77,37 @@ export default {
           commit("SET_UPDATING", false);
         });
     },
-    copy({ state }, { folderId, noteId }) {
+    async copy({ state, dispatch }, { noteId, folderId }) {
       noteId = noteId || state.note.id;
+      if (!folderId) return;
+      const { data: note } = await notes.find(noteId);
+
+      const payload = pick(note, ["title", "content"]);
+
+      if (!payload.title.startsWith("Copy of")) {
+        payload.title = "Copy of " + payload.title;
+      }
+      payload.folder_id = folderId;
+      return dispatch("create", payload);
+    },
+    async move({ state, dispatch, commit }, { noteId, folderId }) {
+      noteId = noteId || state.note.id;
+      return new Promise(async (resolve, reject) => {
+        await dispatch("update", {
+          noteId,
+          data: {
+            folder_id: folderId,
+          },
+        });
+        commit("SET_ATTR", {
+          attr: "folder_id",
+          value: folderId,
+        });
+        commit("UPDATE_FOLDER_ID", {
+          folderId,
+        });
+        resolve();
+      });
     },
   },
   mutations: {
@@ -148,6 +178,12 @@ export default {
         `${checked ? "[ ]" : "[x]"} ${text}`,
         `${checked ? "[x]" : "[ ]"} ${text}`
       );
+    },
+    UPDATE_FOLDER_ID(state, { noteId, folderId }) {
+      noteId = noteId || state.note.id;
+      const note = state.notes.data.find((n) => n.id === noteId);
+      if (!note) return;
+      note.folder_id = folderId;
     },
   },
 };

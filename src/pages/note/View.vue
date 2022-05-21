@@ -1,6 +1,6 @@
 <template>
   <div class="note-area h-fit overflow-y-auto px-6">
-    <h2 class="mb-6 text-4xl font-bold text-heading">{{ note.title }}</h2>
+    <h2 class="mb-6 text-4xl font-bold text-indigo-500">{{ note.title }}</h2>
     <Preview @checked="HANDLE_CHECKBOX" />
   </div>
 </template>

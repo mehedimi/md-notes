@@ -56,7 +56,7 @@ ipcMain.handle("get:notes/:note", (event, noteId) => {
 });
 
 ipcMain.handle("patch:notes/:note", (event, noteId, payload) => {
-  const data = pick(payload, ["title", "content"]);
+  const data = pick(payload, ["title", "content", "folder_id"]);
 
   const updatedAt = moment().format();
 

@@ -1,6 +1,6 @@
 <template>
   <article
-    class="prose min-w-full overflow-x-auto font-encode prose-headings:text-heading prose-p:text-light prose-a:text-heading prose-strong:text-light prose-code:rounded prose-code:bg-yellow-200 prose-code:py-0.5 prose-code:px-1 prose-code:font-normal prose-code:before:content-[''] prose-code:after:content-[''] prose-li:text-light prose-li:marker:text-light prose-img:rounded"
+    class="prose min-w-full font-encode prose-headings:text-indigo-500 prose-p:text-light prose-a:text-indigo-500 prose-strong:text-light prose-code:rounded prose-code:bg-indigo-600 prose-code:py-0.5 prose-code:px-1 prose-code:font-normal prose-code:text-white prose-code:before:content-[''] prose-code:after:content-[''] prose-li:text-light prose-li:marker:text-light prose-img:rounded"
     v-html="renderedContent"
   ></article>
 </template>
@@ -29,13 +29,13 @@ marked.use({
         lang = aliases[infostring] || infostring;
       }
 
-      return `<div class="highlighted-code">${
+      return `<div class="overflow-x-auto"><div class="highlighted-code">${
         lang
           ? hljs.highlight(code, {
               language: hljs.getLanguage(lang) ? lang : "plaintext",
             }).value
           : hljs.highlightAuto(code).value
-      }</div>`;
+      }</div></div>`;
     },
     checkbox(checked) {
       return `<input type="checkbox"${
@@ -81,5 +81,11 @@ export default {
 }
 input[type="checkbox"] {
   @apply rounded border-white;
+}
+input[type="checkbox"]:checked {
+  @apply bg-indigo-600;
+}
+input[type="checkbox"]:checked:hover {
+  @apply bg-indigo-600;
 }
 </style>

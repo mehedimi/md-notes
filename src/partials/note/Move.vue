@@ -1,16 +1,16 @@
 <template>
-  <Modal ref="copy">
-    <form class="p-5" @submit.prevent="copyNote">
+  <Modal ref="move">
+    <form class="p-5" @submit.prevent="moveNote">
       <div class="mb-4">
-        <label class="mb-1 inline-block text-sm text-light" for="copy-folder"
-          >Copy to</label
+        <label class="mb-1 inline-block text-sm text-light" for="move-folder"
+          >Move to</label
         >
         <select
-          id="copy-folder"
-          v-model="folderId"
+          id="move-folder"
           class="w-full rounded border border-dark bg-sidebar text-light placeholder-light placeholder:text-sm focus:border-dark focus:ring-0"
+          v-model="folderId"
         >
-          <option disabled value="">Select folder</option>
+          <option disabled selected value="">Select folder</option>
           <option v-for="folder in folders" :value="folder.id">
             {{ folder.name }}
           </option>
@@ -21,7 +21,7 @@
           <button
             class="w-full rounded-lg border border-dark bg-dark py-3 text-center text-xs font-semibold uppercase text-light shadow-sidebar hover:text-white"
             type="button"
-            @click="$refs.copy.closeModal"
+            @click="$refs.move.closeModal"
           >
             Cancel
           </button>
@@ -29,7 +29,7 @@
             class="w-full rounded-lg bg-indigo-500 text-xs font-semibold uppercase text-white hover:bg-indigo-600"
             type="submit"
           >
-            Copy
+            Move
           </button>
         </div>
       </div>
@@ -46,6 +46,7 @@ export default {
   },
   data() {
     return {
+      noteId: undefined,
       folderId: "",
     };
   },
@@ -55,27 +56,19 @@ export default {
         return state.folders.data;
       },
     }),
-    ...mapState("note", ["note"]),
   },
   methods: {
-    ...mapActions("note", ["copy", "get"]),
-    openModal() {
-      return this.$refs.copy.openModal();
+    ...mapActions("note", ["move"]),
+    openModal(noteId) {
+      this.noteId = noteId;
+      this.$refs.move.openModal();
     },
-    copyNote() {
+    moveNote() {
       if (!this.folderId) return;
-      this.copy({
+      this.move({
         folderId: this.folderId,
-      }).then((note) => {
-        this.get();
-        this.$router.push({
-          name: "notes.show",
-          params: {
-            noteId: note.id,
-          },
-          query: this.$route.query,
-        });
-        this.$refs.copy.closeModal();
+      }).then(() => {
+        this.$refs.move.closeModal();
       });
     },
   },

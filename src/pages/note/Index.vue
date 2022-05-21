@@ -1,5 +1,10 @@
 <template>
-  <router-view></router-view>
+  <router-view v-if="$route.name !== 'notes.index'"></router-view>
+  <div v-else class="flex flex-col items-center justify-center p-10 text-white">
+    <i class="las la-comment-slash mb-10 text-8xl text-indigo-500"></i>
+    <h2 class="text-2xl font-medium">Nothing opened here</h2>
+    <p></p>
+  </div>
 </template>
 
 <script>

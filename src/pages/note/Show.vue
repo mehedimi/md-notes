@@ -1,29 +1,16 @@
 <template>
   <div class="flex w-full flex-col">
-    <div class="m-3 flex items-center justify-between">
-      <Tooltip as="a" href="#" @click.prevent="SHOW_SIDEBAR(!visibleSidebar)">
-        <i
-          class="las la-angle-left text-xl text-gray-400 transition hover:text-sidebar"
-          :class="visibleSidebar ? '' : 'rotate-180 transform'"
-        ></i>
-        <template v-slot:content
-          >{{ visibleSidebar ? "Hide" : "Show" }} Sidebar
-        </template>
-      </Tooltip>
-
-      <div
-        class="note-actions flex items-center gap-x-1 rounded-full bg-gray-700 px-1 py-0.5"
-      >
-        <Tooltip as="div" v-for="page in pages">
-          <router-link
-            :to="{ name: `notes.${page.name}`, query: { page: page.name } }"
-            class="rounded rounded-full px-1.5 text-xl text-gray-400"
-          >
-            <i class="las" :class="page.icon"></i>
-          </router-link>
-          <template v-slot:content>{{ page.text }}</template>
-        </Tooltip>
-      </div>
+    <div class="mx-3 flex items-center justify-between">
+      <Tab />
+      <!--      <Tooltip as="a" href="#" @click.prevent="SHOW_SIDEBAR(!visibleSidebar)">-->
+      <!--        <i-->
+      <!--          class="las la-angle-left text-xl text-gray-400 transition hover:text-sidebar"-->
+      <!--          :class="visibleSidebar ? '' : 'rotate-180 transform'"-->
+      <!--        ></i>-->
+      <!--        <template v-slot:content-->
+      <!--          >{{ visibleSidebar ? "Hide" : "Show" }} Sidebar-->
+      <!--        </template>-->
+      <!--      </Tooltip>-->
       <Menu as="div" class="relative inline-block text-left" v-slot="{ open }">
         <div>
           <MenuButton
@@ -64,7 +51,7 @@
                     active ? 'bg-[#303947]' : '',
                     'flex w-full items-center px-2 py-1 text-sm text-gray-50',
                   ]"
-                  @click="$refs.move.openModal"
+                  @click="$refs.move.openModal(note.id)"
                 >
                   <i class="las la-folder mr-2"></i>
                   Move to
@@ -134,50 +121,31 @@
       </Menu>
     </div>
     <router-view class="mb-2"></router-view>
-    <Copy ref="copy" :exclude-folder-id="note.folder_id" />
+    <Copy ref="copy" />
     <Delete :note-id="note.id" ref="delete" />
-    <Modal ref="move">
-      <form class="p-5">
-        <div class="my-4">
-          <label class="mb-1 inline-block text-sm text-light" for="move-folder"
-            >Folder</label
-          >
-          <select
-            id="move-folder"
-            class="w-full rounded border border-dark bg-sidebar text-light placeholder-light placeholder:text-sm focus:border-dark focus:ring-0"
-          >
-            <option disabled value="">Select folder</option>
-            <option v-for="folder in folders" :value="folder.id">
-              {{ folder.name }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <div class="mt-6 grid grid-cols-2 gap-x-4">
-            <button
-              class="w-full rounded-lg border border-dark bg-dark py-3 text-center text-xs font-semibold uppercase text-light shadow-sidebar hover:text-white"
-              type="button"
-              @click="$refs.move.closeModal"
-            >
-              Cancel
-            </button>
-            <button
-              class="w-full rounded-lg bg-indigo-500 text-xs font-semibold uppercase text-white hover:bg-indigo-600"
-              type="submit"
-            >
-              Move
-            </button>
-          </div>
-        </div>
-      </form>
-    </Modal>
+    <Move ref="move" />
+    <div
+      class="note-actions fixed right-3 bottom-3 flex items-center gap-x-1 rounded-full bg-gray-700 px-1 py-0.5"
+    >
+      <Tooltip as="div" v-for="page in pages">
+        <router-link
+          :to="{ name: `notes.${page.name}`, query: { page: page.name } }"
+          class="rounded rounded-full px-1.5 text-xl text-gray-400"
+        >
+          <i class="las" :class="page.icon"></i>
+        </router-link>
+        <template v-slot:content>{{ page.text }}</template>
+      </Tooltip>
+    </div>
   </div>
 </template>
 
 <script>
 import Note from "../../components/Note.vue";
+import Tab from "../../components/Note/Tab.vue";
 import Modal from "../../components/Modal.vue";
 import Copy from "../../partials/note/Copy.vue";
+import Move from "../../partials/note/Move.vue";
 import Delete from "../../partials/note/Delete.vue";
 import Tooltip from "../../components/Tooltip.vue";
 import { mapMutations, mapState, mapActions } from "vuex";
@@ -204,7 +172,9 @@ export default {
     MenuButton,
     Modal,
     Copy,
+    Move,
     Delete,
+    Tab,
   },
   computed: {
     ...mapState("note", ["loaded", "note"]),
