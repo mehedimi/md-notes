@@ -1,6 +1,6 @@
 <template>
   <article
-    class="prose min-w-full font-encode prose-headings:text-indigo-500 prose-p:text-light prose-a:text-indigo-500 prose-strong:text-light prose-code:rounded prose-code:bg-indigo-600 prose-code:py-0.5 prose-code:px-1 prose-code:font-normal prose-code:text-white prose-code:before:content-[''] prose-code:after:content-[''] prose-li:text-light prose-li:marker:text-light prose-img:rounded"
+    class="prose:prose-indigo prose min-w-full font-encode prose-headings:text-indigo-500 prose-p:text-light prose-a:text-indigo-500 prose-strong:text-light prose-code:rounded prose-code:bg-indigo-600 prose-code:py-0.5 prose-code:px-1 prose-code:font-normal prose-code:text-white prose-code:before:content-[''] prose-code:after:content-[''] prose-li:text-light prose-li:marker:text-light prose-img:rounded"
     v-html="renderedContent"
   ></article>
 </template>

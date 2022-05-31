@@ -2,15 +2,6 @@
   <div class="flex w-full flex-col">
     <div class="mx-3 flex items-center justify-between">
       <Tab />
-      <!--      <Tooltip as="a" href="#" @click.prevent="SHOW_SIDEBAR(!visibleSidebar)">-->
-      <!--        <i-->
-      <!--          class="las la-angle-left text-xl text-gray-400 transition hover:text-sidebar"-->
-      <!--          :class="visibleSidebar ? '' : 'rotate-180 transform'"-->
-      <!--        ></i>-->
-      <!--        <template v-slot:content-->
-      <!--          >{{ visibleSidebar ? "Hide" : "Show" }} Sidebar-->
-      <!--        </template>-->
-      <!--      </Tooltip>-->
       <Menu as="div" class="relative inline-block text-left" v-slot="{ open }">
         <div>
           <MenuButton
@@ -55,17 +46,6 @@
                 >
                   <i class="las la-folder mr-2"></i>
                   Move to
-                </button>
-              </MenuItem>
-              <MenuItem v-slot="{ active }">
-                <button
-                  :class="[
-                    active ? 'bg-[#303947]' : '',
-                    'flex w-full items-center px-2 py-1 text-sm text-gray-50',
-                  ]"
-                >
-                  <i class="las la-folder-open mr-2"></i>
-                  Duplicate
                 </button>
               </MenuItem>
               <MenuItem v-slot="{ active }">
@@ -120,7 +100,7 @@
         </transition>
       </Menu>
     </div>
-    <router-view class="mb-2"></router-view>
+    <router-view class="py-2"></router-view>
     <Copy ref="copy" />
     <Delete :note-id="note.id" ref="delete" />
     <Move ref="move" />
@@ -250,7 +230,8 @@ export default {
   },
   watch: {
     "$route.params.noteId": {
-      handler() {
+      handler(value) {
+        if (value === undefined) return;
         this.find();
       },
       immediate: true,

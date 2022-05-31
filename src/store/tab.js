@@ -3,22 +3,22 @@ import keyBy from "lodash/keyBy";
 export default {
   namespaced: true,
   state: {
-    notes: [],
+    noteIds: [],
   },
   mutations: {
     ADD(state, noteId) {
-      if (!state.notes.includes(noteId)) {
-        state.notes.unshift(noteId);
+      if (!state.noteIds.includes(noteId)) {
+        state.noteIds.unshift(noteId);
       }
     },
     REMOVE(state, index) {
-      state.notes.splice(index, 1);
+      state.noteIds.splice(index, 1);
     },
   },
   getters: {
     notes(state, getters, rootState) {
       const notes = keyBy(rootState.note.notes.data, "id");
-      return state.notes.map((noteId) => {
+      return state.noteIds.map((noteId) => {
         return notes[noteId];
       });
     },

@@ -5,10 +5,16 @@
         <router-link :to="{ name: 'notes.index' }"
           ><i class="las la-angle-down mr-3"></i>All Folders</router-link
         >
-        <Tooltip @click="$refs.resourceCreate.openModal()">
-          <i class="las la-plus"></i>
-          <template v-slot:content>Add Folder</template>
-        </Tooltip>
+        <div>
+          <Tooltip class="mr-2" @click="selectOpenedFile">
+            <i class="las la-radiation-alt"></i>
+            <template v-slot:content>Select opened file</template>
+          </Tooltip>
+          <Tooltip @click="$refs.resourceCreate.openModal()">
+            <i class="las la-plus"></i>
+            <template v-slot:content>Add Folder</template>
+          </Tooltip>
+        </div>
       </div>
       <div>
         <Disclosure
@@ -18,6 +24,7 @@
         >
           <DisclosureButton
             class="group flex w-full items-center px-4 py-1 text-[#C7CDD8] hover:bg-[#303947]"
+            :ref="`folder-${folder.id}`"
           >
             <i
               class="las la-angle-right transition"
@@ -105,10 +112,20 @@ export default {
   },
   computed: {
     ...mapGetters("folder", ["folderWithNotes"]),
+    ...mapState("note", ["note"]),
   },
   methods: {
     ...mapMutations("option", ["SHOW_SIDEBAR"]),
     ...mapMutations("tab", ["ADD"]),
+    selectOpenedFile() {
+      if (!this.$route.name.startsWith("notes.")) {
+        return;
+      }
+      const component = this.$refs[`folder-${this.note.folder_id}`][0];
+      if (component.$el.getAttribute("aria-expanded") === "false") {
+        component.$el.click();
+      }
+    },
   },
   watch: {
     $route(next, from) {
